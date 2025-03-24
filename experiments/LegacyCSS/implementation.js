@@ -2,16 +2,20 @@
  * This file is provided by the webext-support repository at
  * https://github.com/thunderbird/webext-support
  *
+ * Version 1.7
+ * - fix missing tracker reference (contributed by @mlazdans)
+ *   https://github.com/thunderbird/webext-support/pull/77
+ * 
  * Version 1.6
  * - registerChromeUrl() is now async, to be able to properly await registration
- * 
+ *
  * Version 1.5
  * - adjusted to TB128 (no longer loading Services and ExtensionCommon)
  * - use ChromeUtils.importESModule()
- * 
+ *
  * Version 1.4
  * - fix bug in waitForLoad()
- * 
+ *
  * Version 1.3
  * - allow injecting into nested browsers (needed for Thunderbird 115,
  *   which loads about:3pane and about:message into nested browsers)
@@ -46,7 +50,7 @@
     "resource://gre/modules/ExtensionUtils.sys.mjs"
   );
   var { ExtensionError } = ExtensionUtils;
-  
+
   async function waitForLoad(window) {
     for (let i = 0; i < 20; i++) {
       await new Promise(r => window.setTimeout(r, 50));
@@ -93,6 +97,7 @@
     }
 
     tabMonitor = {
+      tracker: this,
       onTabTitleChanged(aTab) { },
       onTabClosing(aTab) { },
       onTabPersist(aTab) { },
@@ -126,11 +131,11 @@
               aTab.browser.addProgressListener(reporterListener);
             });
           }
-          this.notifyOnOpenedListener(aTab.browser.contentWindow);
+          this.tracker.notifyOnOpenedListener(aTab.browser.contentWindow);
         }
 
         if (aTab.chromeBrowser) {
-          this.notifyOnOpenedListener(aTab.chromeBrowser.contentWindow);
+          this.tracker.notifyOnOpenedListener(aTab.chromeBrowser.contentWindow);
         }
       },
     }
@@ -184,7 +189,7 @@
       // super() will add the extension as a member of this.
       super(...args);
       tracker = new Tracker(this.extension);
-      
+
       ExtensionSupport.registerWindowListener(
         tracker.windowListenerId,
         {
@@ -208,7 +213,7 @@
             register: (fire) => {
               function listener(event, url) {
                 fire.sync(url);
-              } 
+              }
               tracker.addOnOpenedListener(listener);
               return () => {
                 tracker.removeOnOpenedListener(listener);
@@ -225,7 +230,7 @@
               } catch (ex) {
                 return;
               };
-              
+
               // Inject CSS if window is a match.
               if (window.location.href === url && !tracker.hasCssFile(window, path)) {
                 let element = window.document.createElement("link");
@@ -303,11 +308,11 @@
           element => element.remove()
         );
       }
-      
+
       // Remove all injected CSS.
       for (let window of Services.wm.getEnumerator(null)) {
         removeFromWindow(window);
-        
+
         // Scan for nested browsers.
         let browsers = [];
         browsers = browsers.concat(...window.document.getElementsByTagName("browser"));
