@@ -44,6 +44,7 @@ The markup of the document needs to include references to the localization keys,
 
 ### Using data-i18n-* attributes
 
+```HTML
 <html>
 <head>
   <title data-i18n-content="extensionName"></title>
@@ -53,9 +54,11 @@ The markup of the document needs to include references to the localization keys,
   <input type="text" data-i18n-placeholder="textPrompt" />
 </body>
 </html>
+```
 
 ### Using escaped keys in data-i18n-* attributes
 
+```HTML
 <html>
 <head>
   <title data-i18n-content="__MSG_extensionName__"></title>
@@ -65,6 +68,7 @@ The markup of the document needs to include references to the localization keys,
   <input type="text" data-i18n-placeholder="__MSG_textPrompt__" />
 </body>
 </html>
+```
 
 ### Using escaped keys anywhere in the document's markup
 
@@ -88,7 +92,7 @@ The `localizeDocument()` function performs three types of replacements:
 
 * `data-i18n-content` — replaces element text content.  
 * `data-i18n-{attr}` — replaces element attributes.  
-* __MSG_*__ placeholders — replaces inline text or attribute values containing escaped localization keys.  
+* `__MSG_*__` placeholders — replaces inline text or attribute values containing escaped localization keys.  
 
 The `localizeDocument()` function supports optional parameters:
 
