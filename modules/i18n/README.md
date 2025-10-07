@@ -1,32 +1,22 @@
 ## About
 
-JavaScript module for string localization in HTML WebExtension pages, such as option pages or browser action pages. Import the `i18n` object from the `i18n.mjs` module file and execute its `updateDocument()` function on page load.
+JavaScript module for string localization in HTML WebExtension pages, such as option pages or browser action pages.  
+Import the `i18n` object from the `i18n.mjs` module file and execute its `localizeDocument()` function on page load.
 
 ## Usage
 
-Historically, escaped localization keys of the form `__MSG_*__` inserted in the document markup (or as attribute values in certain cases) have been used for localized string substitutions.  The downside of this approach is that the escaped keys may be momentarily displayed prior to substitution once the document has loaded.
+The recommended approach is to use `data-i18n-*` attributes to localize visible text and attribute values, such as span content, document titles or input placeholders, ensuring that localization keys are never exposed to users.
 
-In order to prevent this, an alternative is suggested through the use of the `data-i18n-textContent` attribute in conjunction with `i18n.mjs`.  The value of this attribute corresponds to an escaped or unescaped localization key.
+Supported attributes are:
 
-The attribute-based substitution approach is generalized so that other element properties/attributes resulting in visible text (such as document title or textbox placholder) can be localized using `data-i18n-*` patterned attributes (`data-i18n-text`, `data-i18n-placeholder`).
-
-This version of the `i18n` module is backwards-compatible with the original approach.
-
-main.js
-```javascript
-import { i18n } from "i18n.mjs"
-
-document.addEventListener('DOMContentLoaded', () => {
-  i18n.updateDocument();
-}, { once: true });
-```
+* `data-i18n-content`: Sets the `textContent` of the element to the localized string of the specified key or escaped key (`__MSG_*__`). This works for any element, including the document's `title` element.  
+* `data-i18n-{attribute}`: Sets the named HTML attribute to the localized string of the specified key or escaped key (`__MSG_*__`). For example, `data-i18n-placeholder` sets an input's `placeholder` attribute.
 
 ## Examples
 
-Sample English-language localization file:
+The following examples assume this localization `messages.json` file:
 
-_locales/en/messages.json
-```json
+```JSON
 {
   "extensionName": { "message": "My Extension" },
   "goodDay" : { "message": "Have a good day!" },
@@ -34,41 +24,78 @@ _locales/en/messages.json
 }
 ```
 
-Using the `data-i18n-*` attribute approach:
+To localize a document, load a JavaScript file via the following:
 
-main.html 
-```html
-<html>
+```HTML
 <head>
-  <title data-i18n-text="extensionName"></title>
+  <meta charset="utf-8" />
+  <script type="module" src="popup.js" type="application/javascript"></script>
 </head>
-<body>
-
-  <!-- using unescaped keys -->
-  <div data-i18n-textContent="goodDay"></div>
-  <input type="text" data-i18n-placeholder="textPrompt" />
-
-  <!-- using escaped keys -->
-  <div data-i18n-textContent="__MSG_goodDay__"></div>
-  <input type="text" data-i18n-placeholder="__MSG_textPrompt__" />
-
-</body>
-</html>
 ```
 
-Using the legacy approach:
+The example JavaScript file `popup.js` should include the following:
 
-main.html 
-```html
+```JavaScript
+import * as i18n from "./i18n.mjs";
+i18n.localizeDocument();
+```
+
+The markup of the document needs to include references to the localization keys, as shown in the following.
+
+### Using data-i18n-* attributes
+
+<html>
+<head>
+  <title data-i18n-content="extensionName"></title>
+</head>
+<body>
+  <div data-i18n-content="goodDay"></div>
+  <input type="text" data-i18n-placeholder="textPrompt" />
+</body>
+</html>
+
+### Using escaped keys in data-i18n-* attributes
+
+<html>
+<head>
+  <title data-i18n-content="__MSG_extensionName__"></title>
+</head>
+<body>
+  <div data-i18n-content="__MSG_goodDay__"></div>
+  <input type="text" data-i18n-placeholder="__MSG_textPrompt__" />
+</body>
+</html>
+
+### Using escaped keys anywhere in the document's markup
+
+```HTML
 <html>
 <head>
   <title>__MSG_extensionName__</title>
 </head>
 <body>
-
   <div>__MSG_goodDay__</div>
   <input placeholder="__MSG_textPrompt__" />
-
 </body>
 </html>
 ```
+
+Note: Placing localization keys directly in the content may cause them to appear briefly before being replaced once the document loads.
+
+## Implementation Notes
+
+The `localizeDocument()` function performs three types of replacements:
+
+* `data-i18n-content` — replaces element text content.  
+* `data-i18n-{attr}` — replaces element attributes.  
+* __MSG_*__ placeholders — replaces inline text or attribute values containing escaped localization keys.  
+
+The `localizeDocument()` function supports optional parameters:
+
+* `options.extension` — an optional extension object (used for Thunderbird experiments).  
+* `options.keyPrefix` — overrides the default key prefix __MSG___.  
+* `sourceDocument` — an optional document object to localize instead of the current page.  
+
+## Security Considerations
+
+Only safe attributes (e.g., `title`, `alt`, `placeholder`) are intended for localization. Avoid using i18n substitutions for event handler or URL-bearing attributes such as `onclick`, `srcdoc`, `href`, or `src` unless explicitly verified as safe.

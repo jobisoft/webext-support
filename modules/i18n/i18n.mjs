@@ -5,161 +5,150 @@
  * For usage descriptions, please check:
  * https://github.com/thunderbird/webext-support/tree/master/modules/i18n
  *
- * Version 2.0
+ * Version 2.1
  *
  * Derived from:
- *
- * http://github.com/piroor/webextensions-lib-l10n
+ * * http://github.com/piroor/webextensions-lib-l10n
  *
  * Original license:
  * The MIT License, Copyright (c) 2016-2019 YUKI "Piro" Hiroshi
  *
+ * Contributors:
+ * * @piroor (YUKI Hiroshi)
+ * * @jobisoft (John Bieling)
+ * * @tmccoid-tech
+ *
+ * 
  * Usage:
  * 
- * Call updateDocument() to perform localization insertions/replacements in the extension root document.
- * updateAnyDocument(sourceDocument) performs the same operations against any arbitrary HTML document.
+ * Call localizeDocument() to perform localization insertions/replacements of the
+ * loaded document. The function supports two optional parameters:
  * 
- * For a localization entry with the key "someItem" and an escaped key of __MSG_someItem__:
+ * options:
+ *   An object which can specify an "extension" member (to be used in Experiments),
+ *   and/or an "keyPrefix" member, to override the default "__MSG_" prefix for
+ *   localization keys.
+ * document:
+ *   If a different document instead of the currently loaded document is to be
+ *   localized.
  * 
- * 1) Use the "data-i18n-textContent" attribute of an element to set the text, such as:
- *      <div data-i18n-textContent="someItem"></div>                OR
- *      <div data-i18n-textContent="__MSG_someItem__"></div>
+ * Assuming a localization entry with the key "someItem" and an escaped key of
+ * __MSG_someItem__, the function needs to following markup:
  * 
- *      To set other properties or attributes of elements, use the form data-i18n-*, such as:
- *          <title data-i18n-text="someItem"></title>                   // Assigns the document title text
- *          <input type="text" data-i18n-placeholder="someItem" />      // Assigns the placeholder text for a textbox
+ * 1) Use the "data-i18n-content" attribute of an element to set its content, such as:
+ *      <span data-i18n-content="someItem"></span>                 // Assign span content
+ *      <span data-i18n-content="__MSG_someItem__"></span>         // Assign span content
+ *      <title data-i18n-content="someItem"></title>               // Assign document title via content
+ * 
+ * 2) To set other attributes of elements, use the form data-i18n-*, such as:
+ *      <input type="text" data-i18n-placeholder="someItem" />     // Assigns the placeholder text for a textbox
  *      
- * 2) Use the legacy approach of directly applying escaped keys in the markup content, such as:
- *      <div>__MSG_someItem__</div>
- *      <div> 1) __MSG_someItem__: __MSG_someItemDesc__ </div>
- * 
- * 3) Use the legacy approach for element properties/attributes, such as:
+ * 3) Use the __MSG_someItem__ notation anywhere in the documents markup content, such as:
+ *      <span>__MSG_someItem__</div>
+ *      <span> 1) __MSG_someItem__: __MSG_someItemDesc__ </span>
  *      <img alt="__MSG_someItem__"></img>
- *  
+ *
+ *    Note that keys placed in content can momentarily be displayed prior to
+ *    substitution once the document has loaded. It is suggested to use the
+ *    data-i18n-content attribute instead.
  */
 
-export const i18n = ((document, messenger) => {
+const i18nAttrRegex = /^data-i18n-(?<target>.*)/;
 
-    // Private members
-    const i18nAttrRegex = /^data-i18n-(?<target>.*)/;
+let _extension = null;
+let _keyPrefix = "__MSG_";
 
-    const propertyMapping = new Map([
-        ["textcontent", "textContent"]
-    ]);
+const getTranslationFromKey = (key) => {
+    let rv = _extension
+        ? _extension.localeData.localizeMessage(key)
+        : messenger.i18n.getMessage(key);
+    return rv || `__MSG_${key}__`;
+}
 
-    let _extension = null;
-    let _keyPrefix = "__MSG_";
+const getTranslationFromEscapedKey = (placeholder) => {
+    const prefixRegex = new RegExp(_keyPrefix + "(.+?)__", "g");
+    return placeholder.replace(prefixRegex, (escapedKey) => {
+        const key = escapedKey.slice(_keyPrefix.length, -2);
+        return getTranslationFromKey(key);
+    });
+};
 
-    const getTranslation = (placeholder) => {
-        const prefixRegex = new RegExp(_keyPrefix + "(.+?)__", "g");
+const updateSubtreeSet = (sourceDocument, node, selector, update) => {
+    const items = sourceDocument.evaluate(
+        `descendant::${selector}`,
+        node,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+    );
 
-        return placeholder.replace(prefixRegex, (escapedKey) => {
-            const key = escapedKey.slice(_keyPrefix.length, -2);
+    for (let i = 0, count = items.snapshotLength; i < count; i++) {
+        update(items.snapshotItem(i));
+    }
+};
 
-            const result = _extension
-                ? _extension.localeData.localizeMessage(key)
-                : messenger.i18n.getMessage(key);
+const updateSubtree = (sourceDocument, node) => {
+    // Update element content (data-i18n-content) or attribute values based
+    // on data-i18n-* attributes assigned to the element.
+    updateSubtreeSet(sourceDocument, node,
+        '*/@*[starts-with(name(), "data-i18n-")]',
+        (attr) => {
+            const key = attr.value;
 
-            return result || escapedKey;
-        });
-    };
+            let value;
 
-    const updateSubtreeSet = (sourceDocument, node, selector, update) => {
-        const items = sourceDocument.evaluate(
-            `descendant::${selector}`,
-            node,
-            null,
-            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-            null
-        );
+            // If using traditional i18n key placeholders of the form __MSG_*__.
+            if (key.includes(_keyPrefix)) {
+                value = getTranslationFromEscapedKey(key);
+            }
+            // If using the direct i18n keys.
+            else {
+                value = getTranslationFromKey(key);
+            }
 
-        for (let i = 0, count = items.snapshotLength; i < count; i++) {
-            update(items.snapshotItem(i));
+            const { ownerElement } = attr;
+            let { target } = i18nAttrRegex.exec(attr.name).groups;
+
+            if (target == "content") {
+                console.log("Updating content", ownerElement, value)
+                ownerElement.textContent = value;
+            } else {
+                // Assume it is an attribute.
+                console.log("Updating attribute", target, ownerElement, value)
+                ownerElement.setAttribute(target, value);
+            }
         }
-    };
+    );
 
-    const updateSubtree = (sourceDocument, node) => {
-        // Update element properties (including textContent) or attributes based on data-i18n-* attributes assigned to the element
-        updateSubtreeSet(sourceDocument, node,
-            '*/@*[starts-with(name(), "data-i18n-")]',
-            (attr) => {
-                const key = attr.value;
-
-                let value;
-
-                // If using traditional i18n key placeholders of the form __MSG_*__...
-                if(key.includes(_keyPrefix)) {
-                    value = getTranslation(key);
-                }
-                // If using the direct i18n keys...
-                else {
-                    value = _extension
-                        ? _extension.localeData.localizeMessage(key)
-                        : messenger.i18n.getMessage(key);
-
-                        if(!value) {
-                            value = `** i18n error: ${key} **`;
-                            console.warn(`Missing i18n entry for key "${key}".`);
-                        }
-                }
-
-                const { ownerElement } = attr;
-                let { target } = i18nAttrRegex.exec(attr.name).groups;
-
-                if (propertyMapping.has(target)) {
-                    target = propertyMapping.get(target);
-                }
-
-                // If the target member is a property...
-                if (typeof ownerElement[target] !== undefined) {
-                    ownerElement[target] = value;
-                }
-                // Otherwise, assume it is an attribute
-                else {
-                    ownerElement.setAttribute(target, value);
-                }
-            }
-        );
-
-        // Update text nodes containing __MSG_*__ placeholders
-        updateSubtreeSet(sourceDocument, node,
-            `text()[contains(self::text(), "${_keyPrefix}")]`,
-            (text) => {
-                if (text.nodeValue.includes(_keyPrefix))
-                    text.nodeValue = getTranslation(text.nodeValue);
-            }
-        );
-
-        // Update element attributes (excluding data-i18n-*) containing __MSG_*__ placeholders
-        updateSubtreeSet(sourceDocument, node,
-            `*/@*[not(starts-with(name(), "data-i18n-"))][contains(., "${_keyPrefix}")]`,
-             (attr) => {
-                if (attr.value.includes(_keyPrefix))
-                    attr.value = getTranslation(attr.value);
-            }
-        );
-    };
-
-    // Public members
-    const updateAnyDocument = (sourceDocument, options = {}) => {
-        if (options) {
-            if (options.extension)
-                _extension = options.extension;
-            if (options.keyPrefix)
-                _keyPrefix = options.keyPrefix;
+    // Update text nodes containing __MSG_*__ placeholders
+    updateSubtreeSet(sourceDocument, node,
+        `text()[contains(self::text(), "${_keyPrefix}")]`,
+        (text) => {
+            if (text.nodeValue.includes(_keyPrefix))
+                text.nodeValue = getTranslationFromEscapedKey(text.nodeValue);
         }
+    );
 
-        updateSubtree(sourceDocument, sourceDocument);
-    };
+    // Update element attributes (excluding data-i18n-*) containing __MSG_*__ placeholders
+    updateSubtreeSet(sourceDocument, node,
+        `*/@*[not(starts-with(name(), "data-i18n-"))][contains(., "${_keyPrefix}")]`,
+        (attr) => {
+            if (attr.value.includes(_keyPrefix))
+                attr.value = getTranslationFromEscapedKey(attr.value);
+        }
+    );
+};
 
-    const updateDocument = (options = {}) => {
-        updateAnyDocument(document, options);
-    };
+const updateDocument = (options = {}, sourceDocument) => {
+    if (options) {
+        if (options.extension)
+            _extension = options.extension;
+        if (options.keyPrefix)
+            _keyPrefix = options.keyPrefix;
+    }
+    updateSubtree(sourceDocument, sourceDocument);
+};
 
-
-    return {
-        updateAnyDocument: updateAnyDocument,
-        updateDocument: updateDocument
-    };
-
-})(document, messenger);
+export function localizeDocument(options = {}, sourceDocument = document) {
+    updateDocument(options, sourceDocument);
+}
