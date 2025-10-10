@@ -7,12 +7,12 @@ color_scheme: light
 
 # Navigation
 nav_external_links:
-  - title: "Back to GitHub Repo"
-    url: "https://github.com/thunderbird/webext-support"
-  - title: "Thunderbird Add-on Development Documentation"
+  - title: "Add-on Developer Guide"
     url: "https://developer.thunderbird.net/add-ons/about-add-ons"
-  - title: "Thunderbird WebExtension API Documentation"
+  - title: "WebExtension API Documentation"
     url: "https://webextension-api.thunderbird.net/en/mv3/"
+  - title: "Return to the webext-support GitHub repository"
+    url: "https://github.com/thunderbird/webext-support"
 
 # Define look of right-side TOC
 just_the_docs:

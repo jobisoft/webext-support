@@ -2,9 +2,8 @@
 layout: default
 title: Thunderbird WebExtension Coding Strategies
 nav_order: 1
+has_toc: true
 ---
-
-# Thunderbird WebExtension Coding Strategies
 
 This section provides safe and maintainable coding strategies for Thunderbird WebExtension developers.
 
