@@ -1,11 +1,14 @@
 remote_theme: just-the-docs/just-the-docs
 baseurl: "/webext-support"
-title: "WebExt Support - Coding Strategies"
-logo: "https://thunderbird.github.io/webext-support/assets/logo.png"
+title: "Coding Strategies for Add-on Developers"
+logo: "/assets/logo.png"
 logo_only: true
 
 url: "https://thunderbird.github.io/webext-support"
 color_scheme: light
+
+include:
+  - assets
 
 # Navigation
 nav_external_links:
