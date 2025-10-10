@@ -1,6 +1,6 @@
 title: "Thunderbird WebExtension Coding Strategies"
 description: "Guidance and best practices for developing Thunderbird extensions."
-baseurl: "" # empty since it's served at /webext-support/
+baseurl: "/webext-support"
 theme: just-the-docs
 
 url: "https://thunderbird.github.io/webext-support"
