@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Avoid using `innerHTML`
+title: Avoid using innerHTML
 nav_order: 2
 ---
 
@@ -15,6 +15,8 @@ will generate the required DOM nodes on-the-fly. Usually there are two use cases
 Using `innerHTML` directly is risky because it **injects raw HTML into the DOM**, which can easily introduce **cross-site scripting (XSS) vulnerabilities** if any of the content comes from user input or an external source. It also bypasses the browser's native DOM APIs, which can lead to **unexpected behavior, broken layouts, or loss of event listeners**. 
 
 Even when the content originates from internal sources, using `innerHTML` is generally a poor practice. Replacing an element's entire HTML structure forces the browser to destroy and rebuild the DOM nodes, which can lead to **performance issues**, unnecessary layout recalculations, and the loss of attached event listeners or state. For these reasons, it is recommended to manipulate the DOM selectively using element creation, `textContent`, or data-driven visibility toggles.
+
+More information on this topic is available on [MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Safely_inserting_external_content_into_a_page).
 
 ## Update content via span placeholders
 
@@ -102,7 +104,7 @@ Instead of dynamically generating HTML, define a `<template>` in the markup and 
 ```html
 <template id="missing-config-template">
   <p>
-            Missing configuration.
+    Missing configuration.
     <a href="#" data-action="open-settings">Open settings to update configuration</a>
   </p>
 </template>
@@ -110,8 +112,8 @@ Instead of dynamically generating HTML, define a `<template>` in the markup and 
 
 ```javascript
   const template = document.getElementById('missing-config-template');
-    const message = template.content.cloneNode(true);
-    const link = message.querySelector('[data-action="open-settings"]');
+  const message = template.content.cloneNode(true);
+  const link = message.querySelector('[data-action="open-settings"]');
 
   link.addEventListener('click', event => {
     event.preventDefault();
@@ -120,14 +122,13 @@ Instead of dynamically generating HTML, define a `<template>` in the markup and 
   });
 
   document.getElementById('configs').appendChild(message);
-
 ```
 
 This approach avoids both `innerHTML` and inline event handlers, ensures safe text insertion, and cleanly separates structure from behavior.
 
 ## Safely inserting external markup with DOMPurify
 
-In some cases, an extension may need to display **externally sourced or user-generated HTML**—for example, when rendering message previews or feed entries. In such situations, using `innerHTML` directly is unsafe, because it allows potentially malicious HTML or script content to be injected into the page.
+In some cases, an extension may need to display **externally sourced or user-generated HTML**, for example, when rendering message previews or feed entries. In such situations, using `innerHTML` directly is unsafe, because it allows potentially malicious HTML or script content to be injected into the page.
 
 To handle this scenario safely, the recommended approach is to **sanitize the markup first using [DOMPurify](https://github.com/cure53/DOMPurify)**, and then insert the sanitized content using `insertAdjacentHTML()`.
 
@@ -152,7 +153,6 @@ This allows reviewers to verify that the file is unchanged.
 
 ```html
 <script src="vendors/purify.min.js"></script>
-
 <div id="preview"></div>
 ```
 
@@ -161,10 +161,10 @@ async function renderExternalMarkup(url) {
     const response = await fetch(url);
     const rawHtml = await response.text();
 
-    // Sanitize the received HTML
+    // Sanitize the received HTML.
     const safeHtml = DOMPurify.sanitize(rawHtml);
 
-    // Insert the sanitized markup safely
+    // Insert the sanitized markup.
     const preview = document.getElementById('preview');
     preview.insertAdjacentHTML('beforeend', safeHtml);
 }
@@ -172,4 +172,4 @@ async function renderExternalMarkup(url) {
 renderExternalMarkup('https://example.com/feed-entry.html');
 ```
 
-This combination provides a controlled, review-friendly way to render external HTML safely within Thunderbird extensions. In the future, browsers will support built-in sanitization for insertAdjacentHTML() via the [Sanitizer API](https://developer.mozilla.org/en-US/docs/Web/API/Sanitizer), but for now, using DOMPurify() remains necessary.
+This combination provides a controlled way to render external HTML safely within Thunderbird extensions. In the future, browsers will support built-in sanitization for `insertAdjacentHTML()` via the [Sanitizer API](https://developer.mozilla.org/en-US/docs/Web/API/Sanitizer), but for now, using `DOMPurify()` remains necessary.
