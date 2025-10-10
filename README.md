@@ -56,9 +56,3 @@ The `ui` folder contains the following elements:
 | ------------------ | ----------- |
 | [data-tables](ui/data-tables/)         | Set of 3rd party libraries to present data in tables. | 
 | [mail-folder-picker](ui/mail-folder-picker/) | A custom element which allows to select one of the user's mail folders (IMAP, POP, Local, ...). |
-
-## Docs - Coding Strategies
-
-This folder contains the source files for the rendered **Coding Strategies** site. To view it in its proper format, please visit:
-
-🔗 **[Coding Strategies for Add-on Developers](https://thunderbird.github.io/webext-support/)**
