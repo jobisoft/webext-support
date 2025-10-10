@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Avoid `innerHTML`
+title: Avoid using `innerHTML`
 nav_order: 2
 ---
 

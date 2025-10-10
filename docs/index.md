@@ -1,12 +1,10 @@
 ---
 layout: default
-title: Thunderbird WebExtension Coding Strategies
+title: WebExt Support - Coding Strategies
 nav_order: 1
 has_toc: true
 ---
 
-This section provides safe and maintainable coding strategies for Thunderbird WebExtension developers.
+# WebExt Support – Coding Strategies
 
-Each guide explains a common pitfall or anti-pattern, followed by recommended alternatives.
-
-Use the navigation on the left to browse available strategies.
+This section provides coding strategies for Thunderbird WebExtension developers, focusing on common pitfalls and anti-patterns.

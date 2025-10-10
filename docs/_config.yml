@@ -1,7 +1,6 @@
 remote_theme: just-the-docs/just-the-docs
-description: "Guidance and best practices for developing Thunderbird extensions."
 baseurl: "/webext-support"
-title: "Thunderbird WebExtension Coding Strategies"
+title: "WebExt Support - Coding Strategies"
 logo: "https://thunderbird.github.io/webext-support/assets/logo.png"
 logo_only: true
 
