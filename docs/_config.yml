@@ -18,6 +18,3 @@ nav_external_links:
 # Define look of right-side TOC
 just_the_docs:
   search_enabled: true
-  show_toc: true
-  toc_label: "On this page"
-  nav_enabled: true
