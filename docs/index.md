@@ -7,4 +7,4 @@ has_toc: true
 
 # Coding Strategies for Add-on Developers
 
-This section provides coding strategies for Thunderbird WebExtension developers, focusing on common pitfalls and anti-patterns.
+This section provides coding strategies for Add-on developers, focusing on common pitfalls and anti-patterns.

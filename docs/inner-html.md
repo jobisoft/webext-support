@@ -3,6 +3,7 @@ layout: default
 title: Avoid using `innerHTML`
 nav_order: 2
 has_toc: true
+show_toc: true
 ---
 
 # Avoid using `innerHTML`
