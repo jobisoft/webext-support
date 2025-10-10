@@ -2,7 +2,6 @@ title: "Thunderbird WebExtension Coding Strategies"
 description: "Guidance and best practices for developing Thunderbird extensions."
 baseurl: "/webext-support"
 theme: just-the-docs
-
 url: "https://thunderbird.github.io/webext-support"
 color_scheme: light
 
@@ -14,19 +13,6 @@ nav_external_links:
     url: "https://developer.thunderbird.net/add-ons/about-add-ons"
   - title: "Thunderbird WebExtension API Documentation"
     url: "https://webextension-api.thunderbird.net/en/mv3/"
-
-# Auto collection of all included markdown files
-collections:
-  coding-strategies:
-    output: true
-    permalink: /:collection/:path/
-defaults:
-  - scope:
-      path: ""
-      type: coding-strategies
-    values:
-      layout: default
-      nav_order: 10
 
 # Define look of right-side TOC
 just_the_docs:
