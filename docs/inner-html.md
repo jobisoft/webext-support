@@ -2,6 +2,7 @@
 layout: default
 title: Avoid using `innerHTML`
 nav_order: 2
+has_toc: true
 ---
 
 # Avoid using `innerHTML`
@@ -16,3 +17,8 @@ Use the DOM API to create and append elements safely:
 const div = document.createElement("div");
 div.textContent = "Safe text here";
 parent.appendChild(div);
+```
+
+## Other Section
+
+TBD
