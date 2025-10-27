@@ -5,7 +5,7 @@ A self-contained storage editor for WebExtensions, inspired by the `about:config
 Supports viewing and editing entries from `browser.storage.local`, `sync`, or `session` in either a `tab` or a `popup`.
 
 <div align="center">
-  <img width="665" height="514" alt="image" src="https://github.com/user-attachments/assets/afc0e973-c1ba-4ab8-b5e6-487194376789" />
+  <img width="839" height="590" alt="image" src="https://github.com/user-attachments/assets/e5daac53-6317-4fe8-9e56-6ab5b6fafd10" />
 </div>
 
 ## Usage
