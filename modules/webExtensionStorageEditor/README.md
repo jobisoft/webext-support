@@ -25,7 +25,7 @@ webExtensionStorageEditor.open({
 
 The user can toggle boolean values directly by clicking the ⇄ button. This allows quick changes without entering the edit mode. Non-boolean values can be edited via the ✎ button, which opens an editable field containing the current value. The user can modify the content and then save the changes by clicking ✓, or cancel the edit by pressing the `ESC` key.
 
-When a `baseFilter` is provided, only entries that match the given filter are displayed. This enables the developer to expose only a specific subset of keys. The user can apply an additional filter in the filter input elememt.
+When a `baseFilter` is provided, only entries that match the given filter are displayed. This enables the developer to expose only a specific subset of keys. The user can apply an additional filter in the filter input element.
 
 ## Examples
 
