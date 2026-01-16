@@ -44,7 +44,7 @@
  *      <input type="text" data-i18n-placeholder="someItem" />     // Assigns the placeholder text for a textbox
  *      
  * 3) Use the __MSG_someItem__ notation anywhere in the documents markup content, such as:
- *      <span>__MSG_someItem__</div>
+ *      <span>__MSG_someItem__</span>
  *      <span> 1) __MSG_someItem__: __MSG_someItemDesc__ </span>
  *      <img alt="__MSG_someItem__"></img>
  *
