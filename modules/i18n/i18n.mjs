@@ -5,7 +5,7 @@
  * For usage descriptions, please check:
  * https://github.com/thunderbird/webext-support/tree/master/modules/i18n
  *
- * Version 2.1
+ * Version 2.2
  *
  * Derived from:
  * * http://github.com/piroor/webextensions-lib-l10n
@@ -110,11 +110,9 @@ const updateSubtree = (sourceDocument, node) => {
             let { target } = i18nAttrRegex.exec(attr.name).groups;
 
             if (target == "content") {
-                console.log("Updating content", ownerElement, value)
                 ownerElement.textContent = value;
             } else {
                 // Assume it is an attribute.
-                console.log("Updating attribute", target, ownerElement, value)
                 ownerElement.setAttribute(target, value);
             }
         }
