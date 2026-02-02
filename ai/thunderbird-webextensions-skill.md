@@ -36,6 +36,44 @@ try {
 3. Only use try-catch for expected error conditions with proper handling
 4. Never suppress errors without logging or handling them
 
+## MANDATORY: Pre-Code Verification Checklist
+
+**⛔ STOP. Complete this checklist BEFORE writing ANY code:**
+
+### Step 1: Verify API Existence
+- [ ] **Is the API in the Standard APIs list?** (See "Available Standard APIs" section below)
+  - ✅ If YES → Proceed to Step 2
+  - ❌ If NO → Check "Available Experiment APIs" section
+  - ❓ If UNSURE → **STOP and verify with documentation first**
+
+### Step 2: Consult Actual Documentation
+- [ ] **Have you read the schema or HTML documentation?**
+  - Standard APIs: `https://webextension-api.thunderbird.net/en/mv3/[api-name]`
+  - Experiment schemas: See "Calendar Experiment API" section
+  - Schema files (raw JSON): See "Accessing Raw source files from GitHub" section
+
+### Step 3: Verify Exact Signatures
+- [ ] **Do you know the EXACT event/method signatures?**
+  - Parameter names (e.g., `returnFormat` not `format`)
+  - Parameter types (string, object, array, etc.)
+  - Required vs optional parameters
+  - Return types and structures
+
+### Step 4: Plan Error Handling
+- [ ] **Have you planned proper error handling?**
+  - What errors are expected?
+  - How will you log them?
+  - How will you handle them (retry, show UI, etc.)?
+  - Are you avoiding error suppression?
+
+**⚠️ RED FLAGS** that indicate you're guessing:
+- Writing `if (browser.someApi)` checks without having verified `someApi` exists
+- Using try-catch around API calls you haven't looked up
+- Assuming event parameters without checking schemas
+- Using parameter names that "sound right" but aren't verified
+
+**If you cannot check all boxes above, DO NOT write code yet. Consult documentation first.**
+
 ## Accessing Raw source files from GitHub
 
 **Pattern for fetching raw sources (or JSONs) (To convert from HTML view to raw):**
@@ -60,6 +98,45 @@ Documentation exists for different channels:
 - **ESR (esr-mv2)**: https://webextension-api.thunderbird.net/en/esr-mv2/
 
 **Key feature:** Search functionality and cross-references between types and functions.
+
+## Available Standard APIs
+
+The available standard APIs are listed here under "WebExtension API reference":
+https://webextension-api.thunderbird.net/en/mv3/
+
+**If the API you need is NOT in this list, it either:**
+1. Does not exist (see next section)
+2. Requires an Experiment API (see "Experiment APIs" section)
+
+## APIs That DO NOT Exist (Common Mistakes)
+
+**⚠️ These APIs are frequently assumed to exist but DO NOT exist as standard APIs:**
+
+### Calendar/Tasks (Use Experiment API Instead)
+- ❌ `browser.calendar.*` - **Not a standard API**
+- ❌ `browser.tasks.*` - **Not a standard API**
+- ❌ `browser.events.*` - **Not a standard API (calendar events)**
+- ✅ **Solution:** Use the Calendar Experiment API (see "Calendar Experiment API" section)
+  - Location: https://github.com/thunderbird/webext-experiments/tree/main/calendar
+  - Provides: `browser.calendar.calendars.*`, `browser.calendar.items.*` for accessing calendar/task data
+  - Status: Safe to use, planned for official inclusion
+
+### File System Access
+- ❌ `browser.fileSystem.*` - **Not available**
+- ❌ Node.js `fs` module - **Not available**
+- ❌ Raw file system APIs - **Not available**
+- ✅ **Solution:** Use `browser.storage.local` for persistence and File objects for user input
+
+### Other Common Misconceptions
+- ❌ `browser.tabs.*` (full Chrome API) - **Limited in Thunderbird** (rarely needed, see Permission Requirements section)
+- ❌ `browser.activeTab` permission - **Rarely needed in Thunderbird**
+- ❌ Chrome-specific APIs - **May not work** (always verify in Thunderbird documentation)
+
+**IMPORTANT:** If you find yourself writing code that uses any API marked with ❌ above:
+1. **STOP immediately**
+2. Re-read this document to find the correct approach
+3. Consult the official documentation
+4. Never use try-catch to "test" if an API exists
 
 ## Understanding Thunderbird Channels
 
@@ -100,14 +177,42 @@ Experiment APIs allow add-ons to access Thunderbird's core internals directly, s
 - **Target ESR channel specifically**
 - Reference `esr-mv2` or `esr-mv3` documentation
 
-### Calendar Experiment API (Special Case)
+### Available Experiment APIs
+
+Only these Experiment APIs are officially maintained and available for use:
+
+#### Calendar Experiment API ⭐ (Special Case - Safe to Recommend)
 
 **Location:** https://github.com/thunderbird/webext-experiments/tree/main/calendar
 
-**Special status:** 
-- This Experiment API is **planned for inclusion**
-- To reduce developer burden, always use that API instead of creating a custom Experiment for interacting with the calendar.
-- Safe to recommend for calendar functionality
+**Special status:**
+- This Experiment API is **planned for inclusion in standard APIs**
+- To reduce developer burden, always use that API instead of creating a custom Experiment for interacting with the calendar
+- **Safe to recommend** for calendar functionality without the usual Experiment warnings
+- This is the ONLY Experiment API with this special status
+
+**What it provides:**
+- `browser.calendar.calendars.*` - Access and manage calendars
+  - `query()`, `get()`, `create()`, `update()`, `remove()`, `clear()`, `synchronize()`
+  - Events: `onCreated`, `onUpdated`, `onRemoved`
+- `browser.calendar.items.*` - Access and manage calendar items (events/tasks)
+  - `query()`, `get()`, `create()`, `update()`, `remove()`, `move()`
+  - Events: `onCreated`, `onUpdated`, `onRemoved`, `onAlarm`
+- `browser.calendar.provider.*` - Create custom calendar providers (for syncing with external services)
+- `browser.calendar.timezones.*` - Timezone handling
+- `calendarItemAction.*` - UI buttons for calendar items
+- `calendarItemDetails.*` - Custom calendar item detail views
+
+**Use cases:**
+- ✅ Reading existing calendar/task data from Thunderbird
+- ✅ Listening for task updates (e.g., percentage complete changes)
+- ✅ Creating/updating/deleting calendar items
+- ✅ Syncing with external calendar services (requires provider APIs)
+
+**Setup requirements:**
+1. Download the experiment files from the GitHub repository
+2. Copy the `experiments/calendar/` directory into your extension
+3. Add experiment_apis entries to manifest.json (see "Calendar Experiment API Configuration Requirements" section)
 
 **Schema files:**
 ```
@@ -392,6 +497,149 @@ This allows to use the `include` directive to load ES6 modules in the background
 - Test on target Thunderbird version
 - Verify on both Release and ESR if relevant
 - Handle edge cases
+
+### Third-Party Library Integration
+
+**CRITICAL:** When including third-party libraries, the loading method MUST match the module type. This is a common source of errors.
+
+#### Module Type Decision
+
+**Check your manifest.json background configuration:**
+```json
+"background": {
+  "scripts": ["background.js"],
+  "type": "module"  // ← This determines everything
+}
+```
+
+- **If `"type": "module"` is present:** Use ES6 modules (preferred)
+- **If `"type": "module"` is absent:** Use UMD/browser builds
+
+#### ES6 Module Pattern (Preferred)
+
+**When:** Background has `"type": "module"`
+
+**How to identify ES6 modules:**
+- File ends with `export { ... }` or `export default`
+- File may start with `import` statements
+- CDN path often includes `/esm/` or `.esm.js`
+
+**Correct setup:**
+
+*Manifest.json:*
+```json
+{
+  "background": {
+    "scripts": ["background.js"],  // Only background.js, NOT the library
+    "type": "module"
+  }
+}
+```
+
+*Background.js:*
+```javascript
+import ICAL from './lib/ical.js';  // Import at the top
+
+// Use normally
+const jcalData = ICAL.parse(icalString);
+```
+
+**IMPORTANT:** Do NOT include the ES6 module library in the manifest's `scripts` array. It must be imported in your JavaScript code.
+
+#### UMD/Browser Pattern
+
+**When:** Background does NOT have `"type": "module"`
+
+**How to identify UMD/browser builds:**
+- File contains `(function(global)` or `typeof define === 'function'`
+- Creates global variables: `window.LibraryName = ...`
+- CDN path includes `/umd/` or `.umd.js` or just `.js`
+
+**Correct setup:**
+
+*Manifest.json:*
+```json
+{
+  "background": {
+    "scripts": ["lib/ical.js", "background.js"]  // Library BEFORE background.js
+  }
+}
+```
+
+*Background.js:*
+```javascript
+// No import needed - use global variable directly
+const jcalData = ICAL.parse(icalString);
+```
+
+#### Verification Steps
+
+Before using a third-party library:
+
+1. **Check your manifest** - Does it have `"type": "module"`?
+2. **Download matching version:**
+   - With `"type": "module"`: Download ES6/ESM version
+   - Without: Download UMD/browser version
+3. **Verify the file type:**
+   ```bash
+   # Check for ES6 module
+   tail -5 lib/library.js  # Look for "export"
+
+   # Check for UMD/browser
+   grep -q "window\." lib/library.js && echo "UMD/Browser"
+   ```
+4. **Use correct loading method:**
+   - ES6: Import in code, not in manifest scripts
+   - UMD: Include in manifest scripts array
+5. **Document in VENDOR.md** which type you're using
+
+#### Common Mistakes
+
+❌ **WRONG:** ES6 module in scripts array
+```json
+// This will NOT work
+"background": {
+  "scripts": ["lib/ical.esm.js", "background.js"],
+  "type": "module"
+}
+```
+
+❌ **WRONG:** Trying to import UMD module
+```javascript
+// This will NOT work - UMD doesn't export
+import ICAL from './lib/ical.umd.js';
+```
+
+✅ **CORRECT:** ES6 module with import
+```json
+"background": {
+  "scripts": ["background.js"],
+  "type": "module"
+}
+```
+```javascript
+import ICAL from './lib/ical.esm.js';
+```
+
+✅ **CORRECT:** UMD in scripts array
+```json
+"background": {
+  "scripts": ["lib/ical.umd.js", "background.js"]
+}
+```
+
+#### Recommendation
+
+**Prefer ES6 modules** because:
+- Modern JavaScript standard
+- Explicit dependencies
+- Better for code review
+- Works with `"type": "module"` (recommended)
+- Aligns with Thunderbird best practices
+
+Only use UMD when:
+- Library doesn't provide ES6 version
+- Supporting older Thunderbird versions
 
 ## Common Mistakes to Avoid
 
