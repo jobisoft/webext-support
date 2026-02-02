@@ -12,13 +12,17 @@ This skill provides comprehensive guidance for developing WebExtensions for Mozi
 ## ⛔ STOP! Mandatory: Read this section before starting to generate any code
  
 ### MOST IMPORTANT
- - Read the official documentation to learn about the available APIs and the exact parameter and property names. Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
- - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. (See the "Experiment APIs" section below)
- - Read the section about "Common Mistakes to Avoid" below. You MUST NOT repeat any of the mistakes mentioned there. Re-evaluate this section each time you have completed a task and updated code.
- - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
- - Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resourced, before moving on to search the web.
- - Only consider Experiments if truly necessary. Understand maintenance requirements mentioned in the "Experiment APIs" section below
+- Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
+- Follow the skill file as close as possible, do not deviate!
+- Read the official documentation to learn about the available APIs and the exact parameter and property names. Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
+- Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. (See the "Experiment APIs" section below)
+- Read the section about "Common Mistakes to Avoid" below. You MUST NOT repeat any of the mistakes mentioned there. Re-evaluate this section each time you have completed a task and updated code.
+- Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
+- Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resourced, before moving on to search the web.
+- Only consider Experiments if truly necessary. Understand maintenance requirements mentioned in the "Experiment APIs" section below
 - Always prefer true parsing using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
+- When including 3rd party libraries, always use the most recent stable version
+- When downloading multiple files from a repository, use git to clone it.
 
 ### Guidelines
 - Keep it simple for beginners: Avoid complex build processes and include dependencies directly
@@ -122,7 +126,7 @@ Only these Experiment APIs are officially maintained and available for use:
 **Setup requirements:**
 1. Download the experiment files from the GitHub repository
 2. Copy the entire(!) `experiments/calendar/` directory into your extension (without modifications, use a git client or download the complete zip file of the entire repository and extract the needed folder)
-3. Add experiment_apis entries to manifest.json (clone the entries as is from https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json)
+3. Add experiment_apis entries to manifest.json, incude all (!) entries found in https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json
 
 **Note:**
 The calendar API defaults to the jCal format, but task are currently only supporting the iCal format. Therfore: Always request iCal format:
@@ -270,7 +274,7 @@ The `applications` manifest entry is deprecated and is no longer supported in Ma
 }
 ```
 
-### 2. API Guessing with Try-Catch
+### 2. Do not guess APIs by using Try-Catch
 A widespread antipattern has emerged in AI-generated Thunderbird extensions:
 ```javascript
 // WRONG - Never do this!
@@ -298,7 +302,7 @@ try {
 3. Only use try-catch for expected error conditions with proper handling
 4. Never suppress errors without logging or handling them
 
-### 3. Using Experiments Unnecessarily
+### 3. Do not use Experiments unnecessarily
 ```javascript
 // WRONG - Using Experiment when standard API exists
 // Don't use Experiment just because you found example code using it
@@ -307,7 +311,7 @@ try {
 const folders = await browser.folders.query({ name: "Inbox" });
 ```
 
-### 4. Not Handling File Storage Correctly
+### 4. Handle file storage correctly
 ```javascript
 // WRONG - Trying to use raw filesystem APIs
 const fs = require('fs'); // Not available!
@@ -393,36 +397,16 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
 See https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
 
-### 7. vCard and iCal Processing
+### 7. Parse vCard, vTodo, vEvent and iCal strings using 3rd party library
 
-#### vCard (Contacts)
+Follow https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html to parse vCard, vEvent and vTodo strings.
 
-**Guide:** https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
+### 8. Parse Mailbox Strings using messengerUtilities
 
-#### iCal (Calendar)
-**Default format:** jCAL
-**Task implementation:** Incomplete - use iCal format instead
+Extract email addresses from mailbox strings like "John Doe <john@example.com>"
 
-**Pattern:**
 ```javascript
-// Request iCal format explicitly
-const item = await browser.calendar.items.create(calendarId, {
-  type: "task",
-  format: "ical",
-  item: icalString  // vTodo in iCalendar format
-});
-
-// Parse using same approach as vCard guide
-// Use standard iCal parsing library
-```
-
-### 8. Parsing Mailbox Strings
-
-**Problem:** Extract email addresses from mailbox strings like "John Doe <john@example.com>"
-
-**Solution:**
-```javascript
-const parsed = await messenger.messengerUtilities.parseMailboxString(
+const parsed = await browser.messengerUtilities.parseMailboxString(
   "John Doe <john@example.com>, Jane <jane@example.com>"
 );
 
@@ -438,13 +422,11 @@ const emails = parsed.map(p => p.email);
 
 **Documentation:** https://webextension-api.thunderbird.net/en/mv3/messengerUtilities.html
 
-**Added in:** TB 137
-
 **Options:**
 - `preserveGroups`: Keep grouped hierarchies
 - `expandMailingLists`: Expand Thunderbird mailing lists (requires `addressBook` permission)
 
-### 9. Using a wrong strict_min_version entry
+### 9. Set correct strict_min_version entry
 
 Make sure the manifest.json has a strict_min_version entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
 
