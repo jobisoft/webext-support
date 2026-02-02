@@ -9,7 +9,7 @@ The content of this document must override any knowledge gained through previous
 ## Overview
 This skill provides comprehensive guidance for developing WebExtensions for Mozilla Thunderbird. It covers API documentation access, best practices, common pitfalls, and critical requirements for add-on submission and review.
  
-## ⛔ STOP! Mandatory: Read this section before starting to generate code
+## ⛔ STOP! Mandatory: Read this section before starting to generate any code
  
 ### MOST IMPORTANT
  - Read the official documentation to learn about the available APIs and the exact parameter and property names. Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
@@ -121,7 +121,7 @@ Only these Experiment APIs are officially maintained and available for use:
 
 **Setup requirements:**
 1. Download the experiment files from the GitHub repository
-2. Copy the `experiments/calendar/` directory into your extension (without modifications)
+2. Copy the entire(!) `experiments/calendar/` directory into your extension (without modifications, use a git client or download the complete zip file of the entire repository and extract the needed folder)
 3. Add experiment_apis entries to manifest.json (clone the entries as is from https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json)
 
 **Note:**
