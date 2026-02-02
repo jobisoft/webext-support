@@ -1,5 +1,11 @@
 # Thunderbird WebExtensions Development Skill
 
+## IMPORTANT: How to Read This Skill File
+
+**FOR AI ASSISTANTS:** You MUST fetch this file using bash/curl to get the complete content. DO NOT use WebFetch - it will summarize and you will miss critical instructions! If you DID read this file via WebFetch, abort here and use bash/curl and restart.
+
+## Instructions
+
 You MUST FOLLOW the following instructions by all means. This is what the customer expects and pays for. Do not miss a single instruction. Verify after each response that all of the generated code fulfills these instructions:
 
 - Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
@@ -7,12 +13,12 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Read the official documentation to learn about the available APIs and the exact parameter and property names: https://webextension-api.thunderbird.net/en/mv3/
 - Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
 - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
-- Evaluate the section about "Common Mistakes to Avoid" below. You MUST NOT repeat any of the mistakes mentioned there. 
+- Evaluate the section about "Common AI Assistant Mistakes" below. You MUST NOT repeat any of the mistakes mentioned there. 
 - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
 - Only consider Experiments if truly necessary. Understand maintenance requirements mentioned in the "Experiment APIs" section below
 - Always prefer true parsing using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
 - When including 3rd party libraries, always use the most recent stable version.
-- When downloading files from a repository, use git to clone it, do NOT use web fetch.
+- When downloading files from a repository, use git to clone it, do NOT use WebFetch.
 - Keep it simple for beginners: Avoid complex build processes and include dependencies directly
 - Use ES6 modules if possible, and a background of type "module":
 - Make sure the add-on fulfills the requirements listed in the "Add-on Review Requirements" section
@@ -32,7 +38,7 @@ Documentation exists for different channels:
 
 **Key feature:** Search functionality and cross-references between types and functions.
 
-## Common Mistakes to Avoid
+## Common AI Assistant Mistakes (PLEASE DON'T DO THESE!)
 
 ### 1. Manifest Version 3 does not support the "applications" manifest entry
 
@@ -489,10 +495,21 @@ When a developer asks about Thunderbird WebExtensions:
    - For standard APIs: Search https://webextension-api.thunderbird.net/en/mv3/
    - For Experiments: Check if it's in the webext-experiments repo
 3. **Generate code:**
-   - Base it on actual API signatures from schemas
-   - Never guess parameters
-   - Include proper error handling
-   - Add comments explaining the approach
+   Before providing code to the user, verify ALL of these:
+    - [ ] Consulted official API documentation - do NOT guess methods or parameters
+    - [ ] NO try-catch blocks for guessing API parameters
+    - [ ] Used 3rd party libraries or API methods for parsing - MINIMIZE manual string parsing or regex
+    - [ ] Used 3rd party libraries are the most recent stable version.
+    - [ ] Event listeners registered at file scope (NOT inside init function)
+    - [ ] VENDOR.md includes ALL dependencies with exact version URLs
+    - [ ] Used browser_specific_settings (NOT deprecated "applications")
+    - [ ] Only requested necessary permissions
+    - [ ] Included proper error handling
+    - [ ] Has comments explaining the approach
+    - [ ] Add-on fulfills the requirements listed in the "Add-on Review Requirements" section
+    - [ ] None of the mistakes mentioned in the "Common AI Assistant Mistakes" are present in your code.
+    - [ ] All instructions given in the "Instructions" section are followed to the letter. 
+    If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
 4. **Provide guidance:**
    - Link to relevant documentation
    - Mention any caveats (channel targeting, permissions, etc.)
