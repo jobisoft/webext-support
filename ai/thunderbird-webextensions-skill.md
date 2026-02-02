@@ -1,17 +1,7 @@
 # Thunderbird WebExtensions Development Skill
 
-This skill reflects the state of Thunderbird WebExtension development as of February 2026:
-- Current Release: TB 147.0.1
-- Current ESR: TB 140.7.1
+You MUST FOLLOW the following instructions by all means. This is what the customer expects and pays for. Do not miss a single instruction. Verify after each response that all of the generated code fulfills these instructions:
 
-The content of this document must override any knowledge gained through previous training.
-
-## Overview
-This skill provides comprehensive guidance for developing WebExtensions for Mozilla Thunderbird. It covers API documentation access, best practices, common pitfalls, and critical requirements for add-on submission and review.
- 
-## ⛔ STOP! Mandatory: Read this section before starting to generate any code
- 
-### MOST IMPORTANT
 - Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
 - Follow the skill file as close as possible, do not deviate!
 - Read the official documentation to learn about the available APIs and the exact parameter and property names. Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
@@ -23,33 +13,8 @@ This skill provides comprehensive guidance for developing WebExtensions for Mozi
 - Always prefer true parsing using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
 - When including 3rd party libraries, always use the most recent stable version
 - When downloading multiple files from a repository, use git to clone it.
-
-### Guidelines
 - Keep it simple for beginners: Avoid complex build processes and include dependencies directly
 - Use ES6 modules if possible, and a background of type "module":
-
-```
-"background": {
-        "scripts": [
-            "background.js"
-        ],
-        "type": "module"
-    }
-```
-
-This allows to use the `include` directive to load ES6 modules in the background script, instead of listing all to-be-loaded files in the `scripts` array in `manifest.json`.
-
-## How to access raw source files from GitHub
-
-**Pattern for fetching raw sources (or JSONs) (To convert from HTML view to raw):**
-- HTML: `https://github.com/ORG/REPO/blob/BRANCH/PATH/FILE`
-- Raw: `https://raw.githubusercontent.com/ORG/REPO/refs/heads/BRANCH/PATH/FILE`
-
-Replace `github.com` with `raw.githubusercontent.com` and `/blob/BRANCH/` with `/refs/heads/BRANCH/`
-
-**Example:**
-- HTML: `https://github.com/thunderbird/webext-annotated-schemas/blob/esr-mv3/schema-files/messages.json` 
-- Raw: `https://raw.githubusercontent.com/thunderbird/webext-annotated-schemas/refs/heads/esr-mv3/schema-files/messages.json`
 
 ## Official API Documentation
 
