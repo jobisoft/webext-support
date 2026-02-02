@@ -16,7 +16,7 @@ The `ai` folder contains a skill file which can be used by various AI coding age
 
 |                    | Description |
 | ------------------ | ----------- |
-| __[thunderbird-webextensions-skill]__(ai/thunderbird-webextensions-skill.md)         | A skill file to teach AI agents how to code Thunderbird WebExtensions. |
+| [thunderbird-webextensions-skill.md](https://raw.githubusercontent.com/thunderbird/webext-support/refs/heads/master/ai/thunderbird-webextensions-skill.md)         | A skill file to teach AI agents how to code Thunderbird WebExtensions. |
 
 ## Experiment APIs
 
