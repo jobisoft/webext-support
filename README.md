@@ -10,6 +10,14 @@ You will learn, how WebExtensions use a set of well-defined APIs (called WebExte
 
 You will also learn, that the current set of available WebExtension APIs for Thunderbird is far from being complete. Many aspects of Thunderbird which are of interest for add-ons, cannot be accessed by them. To overcome this limitation, add-on developers can write [Experiment APIs](https://developer.thunderbird.net/add-ons/mailextensions/experiments), which have direct access to internal Thunderbird functions and can make them available to WebExtensions. Their usage should be minimized. In this repository we provide Experiments, which are currently not planned to be merged into core, but are useful to overcome some of the current limitations. In the [webext-experiments](https://github.com/thunderbird/webext-experiments) repository you will find additional Experiment APIs, which *are* planned to be merged into core.
 
+## AI
+
+The `ai` folder contains a skill file which can be used by various AI coding agents to learn how to code Thunderbird WebExtensions properly:
+
+|                    | Description |
+| ------------------ | ----------- |
+| __[thunderbird-webextensions-skill]__(ai/thunderbird-webextensions-skill.md)         | A skill file to teach AI agents how to code Thunderbird WebExtensions. |
+
 ## Experiment APIs
 
 The `experiments` folder contains the following Experiment APIs, which may be useful while converting legacy extensions to modern WebExtensions:
