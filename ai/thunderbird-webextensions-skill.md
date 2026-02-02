@@ -499,7 +499,7 @@ Make sure the manifest.json has a strict_min_version entry matching the used fun
 - [ ] Verify add-on complies with review policy: https://thunderbird.github.io/atn-review-policy/
 - [ ] Verify that VENDOR.md file is included, if using 3rd party libraries (Example: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html)
 - [ ] Avoid complex build tools (especially for first submission)
-- [ ] Test on target Thunderbird version anhd on most recent ESR
+- [ ] Test on target Thunderbird version and on most recent ESR
 - [ ] Document any Experiment usage clearly
 - [ ] Only request necessary permissions
 
