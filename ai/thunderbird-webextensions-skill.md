@@ -3,7 +3,7 @@
 ## IMPORTANT: How to Read This Skill File
 
 **FOR AI ASSISTANTS:** This file must be read in its original form, not as a summary. If you used WebFetch to read this file, please stop here. Instead, prompt the developer how you should proceed:
-- clone the repository temporarly and read the cloned file
+- clone the repository temporarily and read the cloned file
 - use bash/curl to read the complete content of the provided URL
 - let the developer manually download the file and attach it to the current AI chat
 
@@ -13,7 +13,7 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
 - Follow the skill file as close as possible, do not deviate!
 - Read the [official documentation](https://webextension-api.thunderbird.net/en/mv3/) to learn about the available APIs and the exact parameter and property names
-- Never guess an API or its parameters. Never use an API which does not exists.
+- Never guess an API or its parameters. Never use an API which does not exist.
 - Evaluate the section about "Important Guidelines for AI Assistants" below. You MUST NOT repeat any of the mistakes mentioned there and follow the presented guidelines.
 - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
 - Only consider custom Experiments if truly necessary. Understand the maintenance requirements mentioned in the "Experiment APIs" section below, and that you should target Thunderbird ESR instead of the Thunderbird Standard Release when using custom Experiments.
@@ -25,7 +25,7 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the import directive.
 - Always analyze ES6 modules, to learn if they need a named import or a default import.
 - Make sure the add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
-- Never hardcode user-facing strings, but use the i18n API to localize the add-on as shown in this [i81n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n), which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
+- Never hardcode user-facing strings, but use the i18n API to localize the add-on as shown in this [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n), which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
 - Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resources, before moving on to search the web.
 
 ## Important Guidelines for AI Assistants
@@ -107,7 +107,7 @@ const file = new File([content], "data.txt", { type: "text/plain" });
 await browser.storage.local.set({ file });
 ```
 
-### 5. Understand live cycle of Manifest Version 3 extensions
+### 5. Understand lifecycle of Manifest Version 3 extensions
 - background is automatically executed on install and on disable/enable
 - background is NOT automatically executed on startup, if it did not register an event for `browser.runtime.onStartup()`. Note: The listener function is executed in addition to the background's file scope code. 
 
@@ -231,7 +231,7 @@ Make sure the manifest.json has a strict_min_version entry matching the used fun
 
 ### For Developers
 - Target the Release channel for most add-ons.
-- Target ESR channel if using custom Experiment APIs. Target the Release channel for add-ons with custom Experiment APIs only if add-on developer can provide the required monthly update, otherwise the add-on will stop working an cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
+- Target ESR channel if using custom Experiment APIs. Target the Release channel for add-ons with custom Experiment APIs only if add-on developer can provide the required monthly update, otherwise the add-on will stop working and cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
 
 ## Official API Documentation
 
@@ -291,10 +291,10 @@ Only these Experiment APIs are officially maintained and available for use:
 **Setup requirements:**
 1. Download the experiment files from the GitHub repository
 2. Copy the entire(!) `experiments/calendar/` directory into your extension (without modifications, use a git client or download the complete zip file of the entire repository and extract the needed folder)
-3. Add experiment_apis entries to manifest.json, incude all (!) entries found in https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json
+3. Add experiment_apis entries to manifest.json, include all (!) entries found in https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json
 
 **Note:**
-The calendar API defaults to the jCal format, but task are currently only supporting the iCal format. Therfore: Always request iCal format:
+The calendar API defaults to the jCal format, but tasks are currently only supporting the iCal format. Therefore: Always request iCal format:
 
 ```javascript
 // Always consult schema first, if this example is still correct
@@ -367,7 +367,7 @@ console.log(data.file.name); // Access file properties
 **2. For Advanced developers: Source Code Submission**
 - Follow source code submission guidelines in review policy
 - Developer must upload source code archive during the submission process
-- Reviewer needs to include build instructions (best as a DEVELOPER.md in the source archive), how to build (for example: npm ci; npm run build)
+- Developer needs to include build instructions (best as a DEVELOPER.md in the source archive), how to build (for example: npm ci; npm run build)
 - Source archive must not include any build artifacts or modules which are downloaded by the build process
 - Keep it as minimal as possible
 - The generated file must exactly match the uploaded XPI
@@ -404,7 +404,7 @@ console.log(data.file.name); // Access file properties
 }
 ```
 
-**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the tabs permission and the activeTab permissionm, which are only need to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is also rarely needed.
+**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the tabs permission and the activeTab permission, which are only needed to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is also rarely needed.
 
 
 ## Example Repositories
@@ -480,7 +480,7 @@ When a developer asks about Thunderbird WebExtensions:
    - [ ] List all APIs you extracted from the [official API documentation](https://webextension-api.thunderbird.net/en/mv3/) to proof that you correctly parsed the documentation and know which APIs are available to you, and what they can do.
    - [ ] Determine if the requested add-on can be implemented with the official APIs.
    - [ ] If the official APIs are not sufficient, check if the APIs available in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository can help.
-   - [ ] If you still have not found APIs to implement the requested add-on, elaborate alternative aproaches with the developer. Creating a custom Experiment should be avoided at all costs.
+   - [ ] If you still have not found APIs to implement the requested add-on, elaborate alternative approaches with the developer. Creating a custom Experiment should be avoided at all costs.
 3. **Generate code:**
    Before providing code to the developer, verify ALL of these:
     - [ ] Consulted official API documentation - do NOT guess methods or parameters.
@@ -493,7 +493,7 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] Included proper error handling.
     - [ ] Has comments explaining the approach.
     - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
-    - [ ] Make sure that if a `_localized` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n).
+    - [ ] Make sure that if a `_locales` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n).
     - [ ] Add-on fulfills all the requirements listed in the "Add-on Review Requirements" section.
     - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
