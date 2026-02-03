@@ -8,6 +8,12 @@ AI skills are specialized knowledge files that teach AI assistants like Claude, 
 
 ## How to Use
 
+Prompt the AI agent:
+
+> Please clone `https://github.com/thunderbird/webext-support/` to a temporary directory outside this project, and carefully read the full skill file at `ai/thunderbird-webextensions-skill.md` within the cloned repository. Keep the clone for the duration of this project being worked on, as we may need its resources at a later time.
+
+Alternative:
+
 1. Download the skill file
-2. In your conversation with your coding agent, upload the file as an attachment
-3. The agent will automatically read and apply the skill when helping with Thunderbird development
+2. Attach the file to the chat with your AI agent
+3. Ask the agent to read and follow the skill file
