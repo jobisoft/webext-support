@@ -109,7 +109,7 @@ await browser.storage.local.set({ file });
 
 ### 5. Understand lifecycle of Manifest Version 3 extensions
 - background is automatically executed on install and on disable/enable
-- background is NOT automatically executed on startup, if it did not register an event for `browser.runtime.onStartup()`. Note: The listener function is executed in addition to the background's file scope code. 
+- background is NOT automatically executed on startup unless a `browser.runtime.onStartup` listener is registered. Note: The listener function runs in addition to the background's file scope code. 
 
 ```javascript
 // WRONG
@@ -215,6 +215,37 @@ const emails = parsed.map(p => p.email);
 ### 9. Set correct strict_min_version entry
 
 Make sure the manifest.json has a strict_min_version entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
+
+### 10. Always use background type "module"
+
+Always use `type: "module"` for background scripts. This is actually the simpler approach because:
+- You can still include multiple scripts in the `scripts` array
+- You can also use `import` to load ES6 modules
+- It provides better code organization and explicit dependencies
+
+```json
+// WRONG - Do not omit type or use non-module backgrounds
+"background": {
+  "scripts": ["lib/somelib.js", "background.js"]
+}
+
+// RIGHT - Always use type: "module"
+"background": {
+  "scripts": ["background.js"],
+  "type": "module"
+}
+```
+
+Then in your background.js, import libraries explicitly:
+```javascript
+// Import ES6 module with default export
+import ICAL from "./lib/ical.js";
+
+// Import ES6 module with named exports
+import { someFunction, someConstant } from "./lib/somemodule.js";
+```
+
+**Important:** Never revert to non-module backgrounds just because a library seems difficult to import. Instead, find the ES6 module version of the library or it via the scripts array in the manifest.
 
 
 ## Understanding Thunderbird Release Channels
@@ -496,9 +527,25 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
     - [ ] Make sure that the ID used in the manifest is unique, either use a `{UUID}`-styled ID, or `<something>@<developer-handle>.thunderbird.local`.
-    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limit the add-on to the most recent ESR, if it uses any Experiments.
+    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limit the add-on to the current ESR (fetch https://webextension-api.thunderbird.net/en/esr-mv3/ to get the major version, then use format `"<major>.*"`), if it uses any Experiments.
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
-4. **Mandatory API Permission Audit (MUST be performed before finalizing the project)**
+4. **Mandatory 3rd Party Library Audit (MUST be performed for each included library)**
+    For EACH 3rd party library included in the project:
+    - [ ] Clone or download the library's repository to inspect its source.
+    - [ ] Check `package.json` for `"type": "module"` (indicates ES6 module) and inspect the `"exports"` field.
+    - [ ] Inspect the actual file to determine the export type:
+          - **ES6 default export:** Look for `export default` or `export { something as default }` at the end of the file → use `import LibName from "./lib/file.js"`
+          - **ES6 named exports:** Look for `export { name1, name2 }` or `export const/function` → use `import { name1, name2 } from "./lib/file.js"`
+          - **UMD/IIFE (no ES6 exports):** Look for `(function(root, factory)` or assignments to `window`/`globalThis` → must find ES6 version or create a wrapper module
+    - [ ] Always prefer the minified ES6 module version (e.g., `ical.min.js` over `ical.min.js`).
+    - [ ] Verify the import works by checking the library's documentation or examples.
+    - [ ] Output a library audit table:
+          | Library | File | Module Type | Import Statement |
+          |---------|------|-------------|------------------|
+          | ical.js | lib/ical.js | ES6 default | `import ICAL from "./lib/ical.js"` |
+          | somelib | lib/somelib.mjs | ES6 named | `import { parse } from "./lib/somelib.mjs"` |
+    - [ ] Update VENDOR.md with the correct file path and version URL.
+5. **Mandatory API Permission Audit (MUST be performed before finalizing the project)**
     - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages).
     - [ ] For EACH API method, fetch its direct documentation page via `https://webextension-api.thunderbird.net/en/mv3/<api-name>.html` - or parse the [base page](https://webextension-api.thunderbird.net/en/mv3/) for the correct API link.
     - [ ] Output an API audit table showing:
@@ -508,7 +555,7 @@ When a developer asks about Thunderbird WebExtensions:
           | browser.calendar.items.onUpdated | (Experiment API) | none |
           | browser.i18n.getMessage | .../i18n.html | none |
     - [ ] Only after completing this table, update the permissions entry in manifest.json to include ALL required permissions.
-5. **Provide guidance:**
+6. **Provide guidance:**
    - Inform developer about the next steps mentioned in the "Review Process Tips" section.
 
 **Remember:** The goal is maintainable, reviewable code that other developers can learn from!
