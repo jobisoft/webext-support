@@ -5,6 +5,7 @@
 **FOR AI ASSISTANTS:** This file must be read in its original form, not as a summary. If you used WebFetch to read this file, please stop here. Instead, inform the developer that this file needs to be obtained through one of the following methods:
 - clone the repository temporarly and read the cloned file
 - use bash/curl to read the complete content of the provided URL
+- manually download the file and attach it to the current AI chat
 Please prompt the developer to select one of the options.
 
 ## Instructions
