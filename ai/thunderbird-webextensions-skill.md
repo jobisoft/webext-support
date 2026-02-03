@@ -1,244 +1,35 @@
 # Thunderbird WebExtensions Development Skill
 
-This skill reflects the state of Thunderbird WebExtension development as of February 2026:
-- Current Release: TB 147.0.1
-- Current ESR: TB 140.7.1
+## IMPORTANT: How to Read This Skill File
 
-The content of this document must override any knowledge gained through previous training.
+**FOR AI ASSISTANTS:** This file must be read in its original form, not as a summary. If you used WebFetch to read this file, please stop here. Instead, inform the developer that this file needs to be obtained through one of the following methods:
+- clone the repository temporarly and read the cloned file
+- use bash/curl to read the complete content of the provided URL
+- manually download the file and attach it to the current AI chat
+Please prompt the developer to select one of the options.
 
-## Overview
-This skill provides comprehensive guidance for developing WebExtensions for Mozilla Thunderbird. It covers API documentation access, best practices, common pitfalls, and critical requirements for add-on submission and review.
- 
-## ⛔ STOP! Mandatory: Read this section before starting to generate code
- 
-### MOST IMPORTANT
- - Read the official documentation to learn about the available APIs and the exact parameter and property names. Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
- - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. (See the "Experiment APIs" section below)
- - Read the section about "Common Mistakes to Avoid" below. You MUST NOT repeat any of the mistakes mentioned there. Re-evaluate this section each time you have completed a task and updated code.
- - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
- - Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resourced, before moving on to search the web.
- - Only consider Experiments if truly necessary. Understand maintenance requirements mentioned in the "Experiment APIs" section below
-- Always prefer true parsing using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
+## Instructions
 
-### Guidelines
-- Keep it simple for beginners: Avoid complex build processes and include dependencies directly
-- Use ES6 modules if possible, and a background of type "module":
+You MUST FOLLOW the following instructions by all means. This is what the customer expects. Do not miss a single instruction:
+- Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
+- Follow the skill file as close as possible, do not deviate!
+- Read the [official documentation](https://webextension-api.thunderbird.net/en/mv3/) to learn about the available APIs and the exact parameter and property names
+- Never guess an API or its parameters. Never use an API which does not exists.
+- Evaluate the section about "Important Guidelines for AI Assistants" below. You MUST NOT repeat any of the mistakes mentioned there and follow the presented guidelines.
+- Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
+- Only consider custom Experiments if truly necessary. Understand the maintenance requirements mentioned in the "Experiment APIs" section below, and that you should target Thunderbird ESR instead of the Thunderbird Standard Release when using custom Experiments.
+- Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
+- Keep it simple for beginners: Avoid complex build processes and include dependencies directly and do not use TypeScript.
+- Always prefer true parsing of strings using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
+- When including 3rd party libraries, always use the most recent stable version and include its usage in the VENDOR.md file as shown in this [example](https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html).
+- When downloading files from a repository, use git to clone it, do NOT use WebFetch.
+- Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the import directive.
+- Always analyze ES6 modules, to learn if they need a named import or a default import.
+- Make sure the add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
+- Never hardcode user-facing strings, but use the i18n API to localize the add-on as shown in this [i81n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n), which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
+- Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resources, before moving on to search the web.
 
-```
-"background": {
-        "scripts": [
-            "background.js"
-        ],
-        "type": "module"
-    }
-```
-
-This allows to use the `include` directive to load ES6 modules in the background script, instead of listing all to-be-loaded files in the `scripts` array in `manifest.json`.
-
-## How to access raw source files from GitHub
-
-**Pattern for fetching raw sources (or JSONs) (To convert from HTML view to raw):**
-- HTML: `https://github.com/ORG/REPO/blob/BRANCH/PATH/FILE`
-- Raw: `https://raw.githubusercontent.com/ORG/REPO/refs/heads/BRANCH/PATH/FILE`
-
-Replace `github.com` with `raw.githubusercontent.com` and `/blob/BRANCH/` with `/refs/heads/BRANCH/`
-
-**Example:**
-- HTML: `https://github.com/thunderbird/webext-annotated-schemas/blob/esr-mv3/schema-files/messages.json` 
-- Raw: `https://raw.githubusercontent.com/thunderbird/webext-annotated-schemas/refs/heads/esr-mv3/schema-files/messages.json`
-
-## Official API Documentation
-
-**Primary resource:** https://webextension-api.thunderbird.net/en/mv3/
-
-Documentation exists for different channels:
-- **Release (mv3)**: https://webextension-api.thunderbird.net/en/mv3/
-- **Release (mv2)**: https://webextension-api.thunderbird.net/en/mv2/
-- **ESR (esr-mv3)**: https://webextension-api.thunderbird.net/en/esr-mv3/
-- **ESR (esr-mv2)**: https://webextension-api.thunderbird.net/en/esr-mv2/
-
-**Key feature:** Search functionality and cross-references between types and functions.
-
-
-## Understanding Thunderbird Channels
-
-### Release Channel (Monthly)
-- Update cadence: ~4 weeks
-- A new major version with each release (147.0, 148.0, ...) 
-- Gets new features and APIs (and bug fixes & security fixes)
-
-### ESR Channel (Extended Support Release)
-- Update cadence: 1 major update per year, with lots of versions "missing" in between (115.*, 128.*, 140.*, 153.*, ...)
-- Receives bug fixes & security fixes on regular basis alongside the major monthly releases, but as minor releases (140.1, 140.2, ...)
-- No new features or APIs
-
-### For Developers
-- Target the Release channel for most add-ons.
-- Target ESR channel if using Experiment APIs. Target the Release channel for add-ons with Experiment APIs only if add-on developer can provide the required monthly update, otherwise add-on will stop working an cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
-
-## Experiment APIs
-
-### What Are Experiment APIs?
-Experiment APIs allow add-ons to access Thunderbird's core internals directly, similar to legacy extensions. They have full access to modify everything in Thunderbird.
-
-### Critical Rules for Experiments
-
-**1. Avoid Experiments Unless Absolutely Necessary**
-- Standard WebExtension APIs should always be your first choice
-- Only use Experiments when standard APIs genuinely cannot accomplish your goal
-- Accept limitations rather than adding Experiments
-
-**2. Experiments Require Updates for Each Major Version**
-- This was manageable with ESR (1x/year)
-- Became unsustainable with monthly Release channel (12x/year)
-- Causes developer burnout and user frustration
-
-**3. When Suggesting Experiments**
-- Only if standard APIs cannot accomplish the core goal
-- Developer must explicitly understand the maintenance burden
-- **Target ESR channel specifically**
-- Reference `esr-mv2` or `esr-mv3` documentation
-
-### Available Experiment APIs
-
-Only these Experiment APIs are officially maintained and available for use:
-
-#### Calendar Experiment API ⭐ (Special Case - Safe to Recommend)
-
-**Location:** https://github.com/thunderbird/webext-experiments/tree/main/calendar
-
-**Special status:**
-- This Experiment API is **planned for inclusion in standard APIs**
-- To reduce developer burden, always use that API instead of creating a custom Experiment for interacting with the calendar
-- **Safe to recommend** for calendar functionality without the usual Experiment warnings
-- This is the ONLY Experiment API with this special status
-
-**Use cases:**
-- ✅ Reading existing event/task items from Thunderbird's calendar
-- ✅ Listening for item updates
-- ✅ Creating/updating/deleting items
-- ✅ Syncing with external calendar services (requires provider APIs)
-
-**Setup requirements:**
-1. Download the experiment files from the GitHub repository
-2. Copy the `experiments/calendar/` directory into your extension (without modifications)
-3. Add experiment_apis entries to manifest.json (clone the entries as is from https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json)
-
-**Note:**
-The calendar API defaults to the jCal format, but task are currently only supporting the iCal format. Therfore: Always request iCal format:
-
-```javascript
-// Always consult schema first, if this example is still correct
-browser.calendar.items.onCreated.addListener(
-  async (calendarItem) => {
-    if (calendarItem.type === "task") {
-      // calendarItem already contains the data in requested format
-      // calendarItem.item contains the iCal string
-      // calendarItem.format tells us the format
-      console.log("Task in iCal format:", calendarItem.item);
-    }
-  },
-  { returnFormat: "ical" } // extraParameters to specify format
-);
-```
-
-**Key points from schema:**
-- `returnFormat` is specified in `extraParameters` (second argument to addListener)
-
-### Other Experiment Repositories
-
-**Additional resources (use with caution):**
-- https://github.com/thunderbird/webext-support - Helper APIs and modules (not on track for inclusion)
-- https://github.com/thunderbird/webext-examples - Example extensions (includes some Experiments)
-
-**Remember:** Only Experiments in the `thunderbird/webext-experiments` repo are on track for official inclusion.
-
-## Native File System Access
-
-### Current Limitations
-- Raw filesystem access is NOT available
-- Google implemented it, but Mozilla did not follow
-- Thunderbird cannot lift this alone due to resource constraints
-
-### Recommended Approach
-
-**For data persistence:**
-```javascript
-// Use storage.local for data
-await browser.storage.local.set({ myData: someValue });
-const data = await browser.storage.local.get("myData");
-```
-
-**For user file input:**
-```javascript
-// Use standard file input prompts
-const file = new File([content], "filename.txt", { type: "text/plain" });
-
-// Store File object directly in storage
-await browser.storage.local.set({ file });
-
-// Retrieve later
-const data = await browser.storage.local.get("file");
-console.log(data.file.name); // Access file properties
-```
-
-**Important:** File objects can be stored directly in `browser.storage.local` without serialization!
-
-
-## Add-on Review Requirements
-
-**Review policy:** https://thunderbird.github.io/atn-review-policy/
-
-### Key Requirements
-
-**1. For Beginners: Avoid Build Tools**
-- Include 3rd party libraries directly (don't use webpack, rollup, etc.)
-- **Required:** Include a `VENDOR.md` file that documents all 3rd party libraries used
-- Example: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
-
-**2. For Advanced developers: Source Code Submission**
-- Follow source code submission guidelines in review policy
-- Developer must upload source code archive during the submission process
-- Reviewer needs to include build instructions (best as a DEVELOPER.md in the source archive), how to build (for example: npm ci; npm run build)
-- Source archive must not include any build artifacts or modules which are downloaded by the build process
-- Keep it as minimal as possible
-- The generated file must exactly match the uploaded XPI
-
-
-## Manifest Versions
-
-### Manifest V2 (Legacy)
-- Older version
-- Supports persistent background pages (the default)
-- Being phased out
-
-### Manifest V3 (Current)
-- Newer version, driven by Google
-- No persistent background pages
-- **Service Workers** Google's approach
-- **Event pages** additional approach from Mozilla/Thunderbird - Background restarts when registered events fire
-
-**Default to MV3** for all new extensions.
-
-
-## Permission Requirements
-
-### Common Permissions
-
-```json
-{
-  "permissions": [
-    "messagesRead",      // Read email messages
-    "accountsRead",      // See mail accounts and folders
-    "addressBooks",      // Access address books
-    "storage"            // Use storage.local
-  ]
-}
-```
-
-**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the tabs permission and the activeTab permissionm, which are only need to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is also rarely needed.
-
-## Common Mistakes to Avoid
+## Important Guidelines for AI Assistants
 
 ### 1. Manifest Version 3 does not support the "applications" manifest entry
 
@@ -270,7 +61,7 @@ The `applications` manifest entry is deprecated and is no longer supported in Ma
 }
 ```
 
-### 2. API Guessing with Try-Catch
+### 2. Do not guess APIs by using Try-Catch
 A widespread antipattern has emerged in AI-generated Thunderbird extensions:
 ```javascript
 // WRONG - Never do this!
@@ -298,7 +89,7 @@ try {
 3. Only use try-catch for expected error conditions with proper handling
 4. Never suppress errors without logging or handling them
 
-### 3. Using Experiments Unnecessarily
+### 3. Do not use Experiments unnecessarily
 ```javascript
 // WRONG - Using Experiment when standard API exists
 // Don't use Experiment just because you found example code using it
@@ -307,7 +98,7 @@ try {
 const folders = await browser.folders.query({ name: "Inbox" });
 ```
 
-### 4. Not Handling File Storage Correctly
+### 4. Handle file storage correctly
 ```javascript
 // WRONG - Trying to use raw filesystem APIs
 const fs = require('fs'); // Not available!
@@ -393,36 +184,16 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
 See https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
 
-### 7. vCard and iCal Processing
+### 7. Parse vCard, vTodo, vEvent and iCal strings using 3rd party library
 
-#### vCard (Contacts)
+Follow https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html to parse vCard, vEvent and vTodo strings.
 
-**Guide:** https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
+### 8. Parse Mailbox Strings using messengerUtilities
 
-#### iCal (Calendar)
-**Default format:** jCAL
-**Task implementation:** Incomplete - use iCal format instead
+Extract email addresses from mailbox strings like "John Doe <john@example.com>"
 
-**Pattern:**
 ```javascript
-// Request iCal format explicitly
-const item = await browser.calendar.items.create(calendarId, {
-  type: "task",
-  format: "ical",
-  item: icalString  // vTodo in iCalendar format
-});
-
-// Parse using same approach as vCard guide
-// Use standard iCal parsing library
-```
-
-### 8. Parsing Mailbox Strings
-
-**Problem:** Extract email addresses from mailbox strings like "John Doe <john@example.com>"
-
-**Solution:**
-```javascript
-const parsed = await messenger.messengerUtilities.parseMailboxString(
+const parsed = await browser.messengerUtilities.parseMailboxString(
   "John Doe <john@example.com>, Jane <jane@example.com>"
 );
 
@@ -438,15 +209,204 @@ const emails = parsed.map(p => p.email);
 
 **Documentation:** https://webextension-api.thunderbird.net/en/mv3/messengerUtilities.html
 
-**Added in:** TB 137
-
 **Options:**
 - `preserveGroups`: Keep grouped hierarchies
 - `expandMailingLists`: Expand Thunderbird mailing lists (requires `addressBook` permission)
 
-### 9. Using a wrong strict_min_version entry
+### 9. Set correct strict_min_version entry
 
 Make sure the manifest.json has a strict_min_version entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
+
+
+## Understanding Thunderbird Release Channels
+
+### Standard Release Channel (Monthly)
+- Update cadence: ~4 weeks
+- A new major version with each release (147.0, 148.0, ...) 
+- Gets new features and APIs (and bug fixes & security fixes)
+
+### ESR Channel (Extended Support Release)
+- Update cadence: 1 major update per year, with lots of versions "missing" in between (115.*, 128.*, 140.*, 153.*, ...)
+- Receives bug fixes & security fixes on regular basis alongside the major monthly releases, but as minor releases (140.1, 140.2, ...)
+- No new features or APIs
+
+### For Developers
+- Target the Release channel for most add-ons.
+- Target ESR channel if using custom Experiment APIs. Target the Release channel for add-ons with custom Experiment APIs only if add-on developer can provide the required monthly update, otherwise the add-on will stop working an cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
+
+## Official API Documentation
+
+**Primary resource:** https://webextension-api.thunderbird.net/en/mv3/
+
+Documentation exists for different channels:
+- **Release (mv3)**: https://webextension-api.thunderbird.net/en/mv3/
+- **Release (mv2)**: https://webextension-api.thunderbird.net/en/mv2/
+- **ESR (esr-mv3)**: https://webextension-api.thunderbird.net/en/esr-mv3/
+- **ESR (esr-mv2)**: https://webextension-api.thunderbird.net/en/esr-mv2/
+
+**Key feature:** Search functionality and cross-references between types and functions.
+
+## Experiment APIs
+
+### What Are Experiment APIs?
+Experiment APIs allow add-ons to access Thunderbird's core internals directly, similar to legacy extensions. They have full access to modify everything in Thunderbird.
+
+### Critical Rules for Experiments
+
+**1. Avoid Experiments Unless Absolutely Necessary**
+- Standard WebExtension APIs should always be your first choice
+- Only use Experiments when standard APIs genuinely cannot accomplish your goal
+- Accept limitations rather than adding Experiments
+
+**2. Experiments Require Updates for Each Major Version**
+- This was manageable with ESR (1x/year)
+- Became unsustainable with monthly Release channel (12x/year)
+- Causes developer burnout and user frustration
+
+**3. When Suggesting Experiments**
+- Only if standard APIs cannot accomplish the core goal
+- Developer must explicitly understand the maintenance burden
+- **Target ESR channel specifically**
+- Reference `esr-mv2` or `esr-mv3` documentation
+
+### Available Experiment APIs
+
+Only these Experiment APIs are officially maintained and available for use:
+
+#### Calendar Experiment API ⭐ (Special Case - Safe to Recommend)
+
+**Location:** https://github.com/thunderbird/webext-experiments/tree/main/calendar
+
+**Special status:**
+- This Experiment API is **planned for inclusion in standard APIs**
+- To reduce developer burden, always use that API instead of creating a custom Experiment for interacting with the calendar
+- **Safe to recommend** for calendar functionality without the usual Experiment warnings
+- This is the ONLY Experiment API with this special status
+
+**Use cases:**
+- ✅ Reading existing event/task items from Thunderbird's calendar
+- ✅ Listening for item updates
+- ✅ Creating/updating/deleting items
+- ✅ Syncing with external calendar services (requires provider APIs)
+
+**Setup requirements:**
+1. Download the experiment files from the GitHub repository
+2. Copy the entire(!) `experiments/calendar/` directory into your extension (without modifications, use a git client or download the complete zip file of the entire repository and extract the needed folder)
+3. Add experiment_apis entries to manifest.json, incude all (!) entries found in https://github.com/thunderbird/webext-experiments/blob/main/calendar/manifest.json
+
+**Note:**
+The calendar API defaults to the jCal format, but task are currently only supporting the iCal format. Therfore: Always request iCal format:
+
+```javascript
+// Always consult schema first, if this example is still correct
+browser.calendar.items.onCreated.addListener(
+  async (calendarItem) => {
+    if (calendarItem.type === "task") {
+      // calendarItem already contains the data in requested format
+      // calendarItem.item contains the iCal string
+      // calendarItem.format tells us the format
+      console.log("Task in iCal format:", calendarItem.item);
+    }
+  },
+  { returnFormat: "ical" } // extraParameters to specify format
+);
+```
+
+**Key points from schema:**
+- `returnFormat` is specified in `extraParameters` (second argument to addListener)
+
+### Other Experiment Repositories
+
+**Additional resources (use with caution):**
+- https://github.com/thunderbird/webext-support - Helper APIs and modules (not on track for inclusion)
+- https://github.com/thunderbird/webext-examples - Example extensions (includes some Experiments)
+
+**Remember:** Only Experiments in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository are on track for official inclusion.
+
+## Native File System Access
+
+### Current Limitations
+- Raw filesystem access is NOT available
+- Google implemented it, but Mozilla did not follow
+- Thunderbird cannot lift this alone due to resource constraints
+
+### Recommended Approach
+
+**For data persistence:**
+```javascript
+// Use storage.local for data
+await browser.storage.local.set({ myData: someValue });
+const data = await browser.storage.local.get("myData");
+```
+
+**For user file input:**
+```javascript
+// Use standard file input prompts
+const file = new File([content], "filename.txt", { type: "text/plain" });
+
+// Store File object directly in storage
+await browser.storage.local.set({ file });
+
+// Retrieve later
+const data = await browser.storage.local.get("file");
+console.log(data.file.name); // Access file properties
+```
+
+**Important:** File objects can be stored directly in `browser.storage.local` without serialization!
+
+
+## Add-on Review Requirements
+
+**Review policy:** https://thunderbird.github.io/atn-review-policy/
+
+### Key Requirements
+
+**1. For Beginners: Avoid Build Tools**
+- Include 3rd party libraries directly (don't use webpack, rollup, etc.)
+- Include a `VENDOR.md` file that documents all 3rd party libraries used, and has links to the exact versions used, and not link to the "latest" versions. An example for such a vendor file is shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
+
+**2. For Advanced developers: Source Code Submission**
+- Follow source code submission guidelines in review policy
+- Developer must upload source code archive during the submission process
+- Reviewer needs to include build instructions (best as a DEVELOPER.md in the source archive), how to build (for example: npm ci; npm run build)
+- Source archive must not include any build artifacts or modules which are downloaded by the build process
+- Keep it as minimal as possible
+- The generated file must exactly match the uploaded XPI
+
+
+## Manifest Versions
+
+### Manifest V2 (Legacy)
+- Older version
+- Supports persistent background pages (the default)
+- Being phased out
+
+### Manifest V3 (Current)
+- Newer version, driven by Google
+- No persistent background pages
+- **Service Workers** Google's approach
+- **Event pages** additional approach from Mozilla/Thunderbird - Background restarts when registered events fire
+
+**Default to MV3** for all new extensions.
+
+
+## Permission Requirements
+
+### Common Permissions
+
+```json
+{
+  "permissions": [
+    "messagesRead",      // Read email messages
+    "accountsRead",      // See mail accounts and folders
+    "addressBooks",      // Access address books
+    "storage"            // Use storage.local
+  ]
+}
+```
+
+**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the tabs permission and the activeTab permissionm, which are only need to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is also rarely needed.
+
 
 ## Example Repositories
 
@@ -496,12 +456,11 @@ Make sure the manifest.json has a strict_min_version entry matching the used fun
 ## Review Process Tips
 
 ### Before Submitting
-- [ ] Verify add-on complies with review policy: https://thunderbird.github.io/atn-review-policy/
-- [ ] Verify that VENDOR.md file is included, if using 3rd party libraries (Example: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html)
-- [ ] Avoid complex build tools (especially for first submission)
 - [ ] Test on target Thunderbird version and on most recent ESR
-- [ ] Document any Experiment usage clearly
-- [ ] Only request necessary permissions
+
+### After Submitting
+- [ ] Add a detailed description and screenshots to the add-on's listing page, to inform users about the purpose of this add-on, and how it can be used
+- [ ] If the add-on is localized, the add-on's listing page should also be localized
 
 ### During Review
 - Respond promptly to reviewer feedback
@@ -509,42 +468,50 @@ Make sure the manifest.json has a strict_min_version entry matching the used fun
 - Explain your architectural decisions if asked
 - Be willing to remove unnecessary Experiments
 
-### Common Review Feedback
-- "Please add VENDOR.md"
-- "Please avoid Experiments for this use case"
-- "Please reduce requested permissions"
-- "Please improve description of add-on listing page, provide use cases and screenshots of add-on entry points in the UI"
-
-## Summary: Core Principles
-
-1. **Consult documentation FIRST** - Never guess APIs
-2. **Avoid try-catch suppression** - Handle errors properly or let them surface
-3. **Minimize Experiment usage** - Standard APIs first, always
-4. **Target the right channel** - ESR for Experiments
-5. **Keep it simple** - Especially for beginners
-6. **Document everything** - VENDOR.md, code comments, README
-7. **Request only needed permissions** - Avoid review rejection
-
-
 ---
 
 ## Workflow: How to Use This Skill
 
 When a developer asks about Thunderbird WebExtensions:
 
-1. **First:** Determine if this is a standard API or Experiment question
-2. **Check documentation:**
-   - For standard APIs: Search https://webextension-api.thunderbird.net/en/mv3/
-   - For Experiments: Check if it's in the webext-experiments repo
+1. **First:** If creating a new extension, prompt for developer information:
+   - Developer name (for `author` field in the manifest).
+   - Developer handle (to be used in the extension ID like `myextension@handle.thunderbird.local`).
+2. **Then:** Determine if this is a standard API or an Experiment add-on:
+   - [ ] List all APIs you extracted from the [official API documentation](https://webextension-api.thunderbird.net/en/mv3/) to proof that you correctly parsed the documentation and know which APIs are available to you, and what they can do.
+   - [ ] Determine if the requested add-on can be implemented with the official APIs.
+   - [ ] If the official APIs are not sufficient, check if the APIs available in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository can help.
+   - [ ] If you still have not found APIs to implement the requested add-on, elaborate alternative aproaches with the developer. Creating a custom Experiment should be avoided at all costs.
 3. **Generate code:**
-   - Base it on actual API signatures from schemas
-   - Never guess parameters
-   - Include proper error handling
-   - Add comments explaining the approach
-4. **Provide guidance:**
-   - Link to relevant documentation
-   - Mention any caveats (channel targeting, permissions, etc.)
-   - Suggest alternatives if using Experiments
-   - Include review considerations
+   Before providing code to the developer, verify ALL of these:
+    - [ ] Consulted official API documentation - do NOT guess methods or parameters.
+    - [ ] NO try-catch blocks for guessing API parameters.
+    - [ ] Used 3rd party libraries or API methods for parsing - MINIMIZE manual string parsing or regex.
+    - [ ] Used 3rd party libraries are the most recent stable version.
+    - [ ] Event listeners registered at file scope (NOT inside init function).
+    - [ ] VENDOR.md includes ALL dependencies with exact version (!) URLs (not to "main", "master" or the most recent one).
+    - [ ] Used browser_specific_settings (NOT deprecated "applications").
+    - [ ] Included proper error handling.
+    - [ ] Has comments explaining the approach.
+    - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
+    - [ ] Make sure that if a `_localized` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n).
+    - [ ] Add-on fulfills all the requirements listed in the "Add-on Review Requirements" section.
+    - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
+    - [ ] All instructions given in the "Instructions" section are followed to the letter.
+    - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`.
+    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limited the add-on to the most recent ESR, if it uses any Experiments.
+    If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
+4. **Mandatory API Permission Audit (MUST be performed before finalizing the project)**
+    - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages).
+    - [ ] For EACH API method, fetch its direct documentation page via `https://webextension-api.thunderbird.net/en/mv3/<api-name>.html` - or parse the [base page](https://webextension-api.thunderbird.net/en/mv3/) for the correct API link.
+    - [ ] Output an API audit table showing:
+          | API Method | Documentation URL | Required Permission |
+          |------------|-------------------|---------------------|
+          | browser.storage.session.get | .../storage.html | storage |
+          | browser.calendar.items.onUpdated | (Experiment API) | none |
+          | browser.i18n.getMessage | .../i18n.html | none |
+    - [ ] Only after completing this table, write the manifest.json with ALL required permissions.
+5. **Provide guidance:**
+   - Inform developer about the next steps mentioned in the "Review Process Tips" section.
 
 **Remember:** The goal is maintainable, reviewable code that other developers can learn from!
