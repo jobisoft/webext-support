@@ -10,7 +10,7 @@ AI skills are specialized knowledge files that teach AI assistants like Claude, 
 
 Prompt the AI agent:
 
-> Please clone `https://github.com/thunderbird/webext-support/` to a temporary directory outside this project, and carefully read the full skill file at `ai/thunderbird-webextensions-skill.md` within the cloned repository. Keep the clone for the duration of this project being worked on, as we may need its resources at a later time.
+> Please clone `https://github.com/thunderbird/webext-support/` to a temporary directory outside this project, and carefully read the full skill file at `ai/thunderbird-webextensions-skill.md` within the cloned repository. Please keep the clone for the duration of this project, as we may need its resources at a later date.
 
 Alternative:
 
