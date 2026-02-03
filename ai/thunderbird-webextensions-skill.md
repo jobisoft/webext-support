@@ -2,7 +2,10 @@
 
 ## IMPORTANT: How to Read This Skill File
 
-**FOR AI ASSISTANTS:** You MUST fetch this file using bash/curl to get the complete content. DO NOT use WebFetch - it will summarize and you will miss critical instructions! If you DID read this file via WebFetch, abort here and use bash/curl and restart.
+**FOR AI ASSISTANTS:** This file must be read in its original form, not as a summary. If you used WebFetch to read this file, please stop here. Instead, inform the developer that this file needs to be obtained through one of the following methods:
+- clone the `https://github.com/jobisoft/webext-support/` repository temporarly and read the cloned file
+- use bash/curl to read the complete content of the provided URL
+Please prompt the developer to select one of the options.
 
 ## Instructions
 
@@ -473,11 +476,14 @@ console.log(data.file.name); // Access file properties
 
 When a developer asks about Thunderbird WebExtensions:
 
-1. **First:** Determine if this is a standard API or Experiment question
-2. **Check documentation:**
+1. **First:** If creating a new extension, prompt for developer information:
+   - Developer name (for `author` field in the manifest)
+   - Developer handle (to be used in the extension ID like `myextension@handle.thunderbird.local`)
+2. **Then:** Determine if this is a standard API or Experiment question
+3. **Check documentation:**
    - For standard APIs: Search https://webextension-api.thunderbird.net/en/mv3/
    - For Experiments: Check if it's in the webext-experiments repo
-3. **Generate code:**
+4. **Generate code:**
    Before providing code to the user, verify ALL of these:
     - [ ] Consulted official API documentation - do NOT guess methods or parameters
     - [ ] NO try-catch blocks for guessing API parameters
@@ -486,8 +492,8 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] Event listeners registered at file scope (NOT inside init function)
     - [ ] VENDOR.md includes ALL dependencies with exact version URLs
     - [ ] Used browser_specific_settings (NOT deprecated "applications")
-    - [ ] Only requested necessary permissions
-    - [ ] Requested all required permissions
+    - [ ] Requested all required permissions (if needed, do we have `storage`, `messagesRead`, `accountsRead` ... ?)
+    - [ ] Only requested necessary permissions (check each requested permission, if it is really needed, consult the API documentation)
     - [ ] Included proper error handling
     - [ ] Has comments explaining the approach
     - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
@@ -497,7 +503,7 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
     - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`  
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
-4. **Provide guidance:**
+5. **Provide guidance:**
    - Inform developer about the next steps mentioned in the "Review Process Tips" section
 
 **Remember:** The goal is maintainable, reviewable code that other developers can learn from!
