@@ -6,39 +6,28 @@
 
 ## Instructions
 
-You MUST FOLLOW the following instructions by all means. This is what the customer expects and pays for. Do not miss a single instruction. Verify after each response that all of the generated code fulfills these instructions:
+You MUST FOLLOW the following instructions by all means. This is what the customer expects. Do not miss a single instruction:
 
 - Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
 - Follow the skill file as close as possible, do not deviate!
 - Read the official documentation to learn about the available APIs and the exact parameter and property names: https://webextension-api.thunderbird.net/en/mv3/
-- Never guess an API or its parameters. Never use an API which does not exists. See the "Official API Documentation" section below.
+- List all APIs you extracted from the official API documentation to proof that you correctly parsed it and know which APIs are available to you, and what they can do.
+- Never guess an API or its parameters. Never use an API which does not exists.
+- Evaluate the section about "Important Guidelines for AI Assistants" below. You MUST NOT repeat any of the mistakes mentioned there and follow the presented guidelines.
 - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
-- Evaluate the section about "Common AI Assistant Mistakes" below. You MUST NOT repeat any of the mistakes mentioned there. 
+- Only consider custom Experiments if truly necessary. Understand the maintenance requirements mentioned in the "Experiment APIs" section below, and that you should target Thunderbird ESR instead of the Thunderbird Standard Release when using custom Experiments.
 - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
-- Only consider Experiments if truly necessary. Understand maintenance requirements mentioned in the "Experiment APIs" section below
-- Always prefer true parsing using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
-- When including 3rd party libraries, always use the most recent stable version.
+- Keep it simple for beginners: Avoid complex build processes and include dependencies directly and do not use TypeScript.
+- Always prefer true parsing of strings using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
+- When including 3rd party libraries, always use the most recent stable version and include its usage in the VENDOR.md file as shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html.
 - When downloading files from a repository, use git to clone it, do NOT use WebFetch.
-- Keep it simple for beginners: Avoid complex build processes and include dependencies directly
-- Use ES6 modules if possible, and a background of type "module":
-- Make sure the add-on fulfills the requirements listed in the "Add-on Review Requirements" section
-- Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resourced, before moving on to search the web.
+- Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the import directive.
+- Always analyze ES6 modules, to learn if they need a named import or a default import.
+- Make sure the add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
+- Never hardcode user-facing strings, but use the i18n API to localize the add-on. An example is available at https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n, which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
+- Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resources, before moving on to search the web.
 
-Re-evaluate all these instructions when you think you are done! Double check that your code complies with all of them! None of these instructions is less important then any other, ALL of them have to bve fulfilled.
-
-## Official API Documentation
-
-**Primary resource:** https://webextension-api.thunderbird.net/en/mv3/
-
-Documentation exists for different channels:
-- **Release (mv3)**: https://webextension-api.thunderbird.net/en/mv3/
-- **Release (mv2)**: https://webextension-api.thunderbird.net/en/mv2/
-- **ESR (esr-mv3)**: https://webextension-api.thunderbird.net/en/esr-mv3/
-- **ESR (esr-mv2)**: https://webextension-api.thunderbird.net/en/esr-mv2/
-
-**Key feature:** Search functionality and cross-references between types and functions.
-
-## Common AI Assistant Mistakes (PLEASE DON'T DO THESE!)
+## Important Guidelines for AI Assistants
 
 ### 1. Manifest Version 3 does not support the "applications" manifest entry
 
@@ -227,9 +216,9 @@ const emails = parsed.map(p => p.email);
 Make sure the manifest.json has a strict_min_version entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
 
 
-## Understanding Thunderbird Channels
+## Understanding Thunderbird Release Channels
 
-### Release Channel (Monthly)
+### Standard Release Channel (Monthly)
 - Update cadence: ~4 weeks
 - A new major version with each release (147.0, 148.0, ...) 
 - Gets new features and APIs (and bug fixes & security fixes)
@@ -241,7 +230,19 @@ Make sure the manifest.json has a strict_min_version entry matching the used fun
 
 ### For Developers
 - Target the Release channel for most add-ons.
-- Target ESR channel if using Experiment APIs. Target the Release channel for add-ons with Experiment APIs only if add-on developer can provide the required monthly update, otherwise add-on will stop working an cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
+- Target ESR channel if using custom Experiment APIs. Target the Release channel for add-ons with custom Experiment APIs only if add-on developer can provide the required monthly update, otherwise the add-on will stop working an cause user frustrations. Note: Experiments can modify every aspect of Thunderbird and can therefore also break it. For this reason, Experiment add-ons must provide a `strict_max_version` entry, limiting it to the latest major version the add-on was tested with.
+
+## Official API Documentation
+
+**Primary resource:** https://webextension-api.thunderbird.net/en/mv3/
+
+Documentation exists for different channels:
+- **Release (mv3)**: https://webextension-api.thunderbird.net/en/mv3/
+- **Release (mv2)**: https://webextension-api.thunderbird.net/en/mv2/
+- **ESR (esr-mv3)**: https://webextension-api.thunderbird.net/en/esr-mv3/
+- **ESR (esr-mv2)**: https://webextension-api.thunderbird.net/en/esr-mv2/
+
+**Key feature:** Search functionality and cross-references between types and functions.
 
 ## Experiment APIs
 
@@ -454,35 +455,17 @@ console.log(data.file.name); // Access file properties
 ## Review Process Tips
 
 ### Before Submitting
-- [ ] Verify add-on complies with review policy: https://thunderbird.github.io/atn-review-policy/
-- [ ] Verify that VENDOR.md file is included, if using 3rd party libraries (Example: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html)
-- [ ] Avoid complex build tools (especially for first submission)
 - [ ] Test on target Thunderbird version and on most recent ESR
-- [ ] Document any Experiment usage clearly
-- [ ] Only request necessary permissions
+
+### After Submitting
+- [ ] Add a detailed description and screenshots to the add-on's listing page, to inform users about the purpose of this add-on, and how it can be used
+- [ ] If the add-on is localized, the add-on's listing page should also be localized
 
 ### During Review
 - Respond promptly to reviewer feedback
 - Be open to suggestions
 - Explain your architectural decisions if asked
 - Be willing to remove unnecessary Experiments
-
-### Common Review Feedback
-- "Please add VENDOR.md"
-- "Please avoid Experiments for this use case"
-- "Please reduce requested permissions"
-- "Please improve description of add-on listing page, provide use cases and screenshots of add-on entry points in the UI"
-
-## Summary: Core Principles
-
-1. **Consult documentation FIRST** - Never guess APIs
-2. **Avoid try-catch suppression** - Handle errors properly or let them surface
-3. **Minimize Experiment usage** - Standard APIs first, always
-4. **Target the right channel** - ESR for Experiments
-5. **Keep it simple** - Especially for beginners
-6. **Document everything** - VENDOR.md, code comments, README
-7. **Request only needed permissions** - Avoid review rejection
-
 
 ---
 
@@ -504,16 +487,15 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] VENDOR.md includes ALL dependencies with exact version URLs
     - [ ] Used browser_specific_settings (NOT deprecated "applications")
     - [ ] Only requested necessary permissions
+    - [ ] Requested all required permissions
     - [ ] Included proper error handling
     - [ ] Has comments explaining the approach
+    - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API
     - [ ] Add-on fulfills the requirements listed in the "Add-on Review Requirements" section
-    - [ ] None of the mistakes mentioned in the "Common AI Assistant Mistakes" are present in your code.
+    - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
     - [ ] All instructions given in the "Instructions" section are followed to the letter. 
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
 4. **Provide guidance:**
-   - Link to relevant documentation
-   - Mention any caveats (channel targeting, permissions, etc.)
-   - Suggest alternatives if using Experiments
-   - Include review considerations
+   - Inform developer about the next steps mentioned in the "Review Process Tips" section
 
 **Remember:** The goal is maintainable, reviewable code that other developers can learn from!
