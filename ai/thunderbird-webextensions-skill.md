@@ -531,14 +531,11 @@ When a developer asks about Thunderbird WebExtensions:
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
 4. **Mandatory 3rd Party Library Audit (MUST be performed for each included library)**
     For EACH 3rd party library included in the project:
-    - [ ] Clone or download the library's repository to inspect its source.
-    - [ ] Check `package.json` for `"type": "module"` (indicates ES6 module) and inspect the `"exports"` field.
     - [ ] Inspect the actual file to determine the export type:
           - **ES6 default export:** Look for `export default` or `export { something as default }` at the end of the file → use `import LibName from "./lib/file.js"`
           - **ES6 named exports:** Look for `export { name1, name2 }` or `export const/function` → use `import { name1, name2 } from "./lib/file.js"`
-          - **UMD/IIFE (no ES6 exports):** Look for `(function(root, factory)` or assignments to `window`/`globalThis` → must find ES6 version or create a wrapper module
-    - [ ] Always prefer the minified ES6 module version (e.g., `ical.min.js` over `ical.min.js`).
-    - [ ] Verify the import works by checking the library's documentation or examples.
+          - **UMD/IIFE (no ES6 exports):** Look for `(function(root, factory)` or assignments to `window`/`globalThis` → try to find ES6 version or load via scripts tag in `manifest.json`.
+    - [ ] Always prefer the minified module version.
     - [ ] Output a library audit table:
           | Library | File | Module Type | Import Statement |
           |---------|------|-------------|------------------|
