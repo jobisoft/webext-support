@@ -11,11 +11,9 @@ Please prompt the developer to select one of the options.
 ## Instructions
 
 You MUST FOLLOW the following instructions by all means. This is what the customer expects. Do not miss a single instruction:
-
 - Do NOT try the minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
 - Follow the skill file as close as possible, do not deviate!
-- Read the official documentation to learn about the available APIs and the exact parameter and property names: https://webextension-api.thunderbird.net/en/mv3/
-- List all APIs you extracted from the official API documentation to proof that you correctly parsed it and know which APIs are available to you, and what they can do.
+- Read the [official documentation](https://webextension-api.thunderbird.net/en/mv3/) to learn about the available APIs and the exact parameter and property names
 - Never guess an API or its parameters. Never use an API which does not exists.
 - Evaluate the section about "Important Guidelines for AI Assistants" below. You MUST NOT repeat any of the mistakes mentioned there and follow the presented guidelines.
 - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
@@ -23,12 +21,12 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
 - Keep it simple for beginners: Avoid complex build processes and include dependencies directly and do not use TypeScript.
 - Always prefer true parsing of strings using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
-- When including 3rd party libraries, always use the most recent stable version and include its usage in the VENDOR.md file as shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html.
+- When including 3rd party libraries, always use the most recent stable version and include its usage in the VENDOR.md file as shown in this [example](https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html).
 - When downloading files from a repository, use git to clone it, do NOT use WebFetch.
 - Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the import directive.
 - Always analyze ES6 modules, to learn if they need a named import or a default import.
 - Make sure the add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
-- Never hardcode user-facing strings, but use the i18n API to localize the add-on. An example is available at https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n, which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
+- Never hardcode user-facing strings, but use the i18n API to localize the add-on as shown in this [i81n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n), which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
 - Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resources, before moving on to search the web.
 
 ## Important Guidelines for AI Assistants
@@ -323,7 +321,7 @@ browser.calendar.items.onCreated.addListener(
 - https://github.com/thunderbird/webext-support - Helper APIs and modules (not on track for inclusion)
 - https://github.com/thunderbird/webext-examples - Example extensions (includes some Experiments)
 
-**Remember:** Only Experiments in the `thunderbird/webext-experiments` repo are on track for official inclusion.
+**Remember:** Only Experiments in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository are on track for official inclusion.
 
 ## Native File System Access
 
@@ -365,8 +363,7 @@ console.log(data.file.name); // Access file properties
 
 **1. For Beginners: Avoid Build Tools**
 - Include 3rd party libraries directly (don't use webpack, rollup, etc.)
-- Include a `VENDOR.md` file that documents all 3rd party libraries used, and has links to the exact versions used, and not link to the "latest" versions.
-- Example: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
+- Include a `VENDOR.md` file that documents all 3rd party libraries used, and has links to the exact versions used, and not link to the "latest" versions. An example for such a vendor file is shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
 
 **2. For Advanced developers: Source Code Submission**
 - Follow source code submission guidelines in review policy
@@ -478,33 +475,35 @@ console.log(data.file.name); // Access file properties
 When a developer asks about Thunderbird WebExtensions:
 
 1. **First:** If creating a new extension, prompt for developer information:
-   - Developer name (for `author` field in the manifest)
-   - Developer handle (to be used in the extension ID like `myextension@handle.thunderbird.local`)
-2. **Then:** Determine if this is a standard API or Experiment question
-3. **Check documentation:**
-   - For standard APIs: Search https://webextension-api.thunderbird.net/en/mv3/
-   - For Experiments: Check if it's in the webext-experiments repo
-4. **Generate code:**
+   - Developer name (for `author` field in the manifest).
+   - Developer handle (to be used in the extension ID like `myextension@handle.thunderbird.local`).
+2. **Then:** Determine if this is a standard API or an Experiment add-on:
+   - [ ] List all APIs you extracted from the [official API documentation](https://webextension-api.thunderbird.net/en/mv3/) to proof that you correctly parsed the documentation and know which APIs are available to you, and what they can do.
+   - [ ] Determine if the requested add-on can be implemented with the official APIs.
+   - [ ] If the official APIs are not sufficient, check if the APIs available in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository can help.
+   - [ ] If you still have not found APIs to implement the requested add-on, elaborate alternative aproaches with the developer. Creating a custom Experiment should be avoided at all costs.
+3. **Generate code:**
    Before providing code to the user, verify ALL of these:
-    - [ ] Consulted official API documentation - do NOT guess methods or parameters
-    - [ ] NO try-catch blocks for guessing API parameters
-    - [ ] Used 3rd party libraries or API methods for parsing - MINIMIZE manual string parsing or regex
+    - [ ] Consulted official API documentation - do NOT guess methods or parameters.
+    - [ ] NO try-catch blocks for guessing API parameters.
+    - [ ] Used 3rd party libraries or API methods for parsing - MINIMIZE manual string parsing or regex.
     - [ ] Used 3rd party libraries are the most recent stable version.
-    - [ ] Event listeners registered at file scope (NOT inside init function)
-    - [ ] VENDOR.md includes ALL dependencies with exact version URLs
-    - [ ] Used browser_specific_settings (NOT deprecated "applications")
-    - [ ] Included proper error handling
-    - [ ] Has comments explaining the approach
+    - [ ] Event listeners registered at file scope (NOT inside init function).
+    - [ ] VENDOR.md includes ALL dependencies with exact version (!) URLs (not to "main", "master" or the most recent one).
+    - [ ] Used browser_specific_settings (NOT deprecated "applications").
+    - [ ] Included proper error handling.
+    - [ ] Has comments explaining the approach.
     - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
-    - [ ] Make sure that if a `_localized` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the mentioned i18n API example at: https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n
-    - [ ] Add-on fulfills the requirements listed in the "Add-on Review Requirements" section
+    - [ ] Make sure that if a `_localized` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n).
+    - [ ] Add-on fulfills all the requirements listed in the "Add-on Review Requirements" section.
     - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
-    - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`  
+    - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`.
+    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limited the add-on to the most recent ESR, if it uses any Experiments.
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
-6. **Mandatory API Audit (MUST be performed before finalizing the project)**
-    - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages)
-    - [ ] For EACH API method, fetch its documentation page: `https://webextension-api.thunderbird.net/en/mv3/<api-name>.html` (or parse the base page at https://webextension-api.thunderbird.net/en/mv3/ for the correct API link)
+4. **Mandatory API Permission Audit (MUST be performed before finalizing the project)**
+    - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages).
+    - [ ] For EACH API method, fetch its direct documentation page via `https://webextension-api.thunderbird.net/en/mv3/<api-name>.html` - or parse the [base page](https://webextension-api.thunderbird.net/en/mv3/) for the correct API link.
     - [ ] Output an API audit table showing:
           | API Method | Documentation URL | Required Permission |
           |------------|-------------------|---------------------|
@@ -513,6 +512,6 @@ When a developer asks about Thunderbird WebExtensions:
           | browser.i18n.getMessage | .../i18n.html | none |
     - [ ] Only after completing this table, write the manifest.json with ALL required permissions.
 5. **Provide guidance:**
-   - Inform developer about the next steps mentioned in the "Review Process Tips" section
+   - Inform developer about the next steps mentioned in the "Review Process Tips" section.
 
 **Remember:** The goal is maintainable, reviewable code that other developers can learn from!
