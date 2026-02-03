@@ -109,7 +109,7 @@ await browser.storage.local.set({ file });
 
 ### 5. Understand lifecycle of Manifest Version 3 extensions
 - background is automatically executed on install and on disable/enable
-- background is NOT automatically executed on startup, if it did not register an event for `browser.runtime.onStartup()`. Note: The listener function is executed in addition to the background's file scope code. 
+- background is NOT automatically executed on startup unless a `browser.runtime.onStartup` listener is registered. Note: The listener function runs in addition to the background's file scope code. 
 
 ```javascript
 // WRONG
@@ -496,7 +496,7 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
     - [ ] Make sure that the ID used in the manifest is unique, either use a `{UUID}`-styled ID, or `<something>@<developer-handle>.thunderbird.local`.
-    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limit the add-on to the most recent ESR, if it uses any Experiments.
+    - [ ] Make sure that the manifest is using a `strict_max_version` entry to limit the add-on to the current ESR (fetch https://webextension-api.thunderbird.net/en/esr-mv3/ to get the major version, then use format `"<major>.*"`), if it uses any Experiments.
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
 4. **Mandatory API Permission Audit (MUST be performed before finalizing the project)**
     - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages).
