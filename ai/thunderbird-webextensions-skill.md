@@ -483,7 +483,7 @@ When a developer asks about Thunderbird WebExtensions:
    - [ ] If the official APIs are not sufficient, check if the APIs available in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository can help.
    - [ ] If you still have not found APIs to implement the requested add-on, elaborate alternative aproaches with the developer. Creating a custom Experiment should be avoided at all costs.
 3. **Generate code:**
-   Before providing code to the user, verify ALL of these:
+   Before providing code to the developer, verify ALL of these:
     - [ ] Consulted official API documentation - do NOT guess methods or parameters.
     - [ ] NO try-catch blocks for guessing API parameters.
     - [ ] Used 3rd party libraries or API methods for parsing - MINIMIZE manual string parsing or regex.
