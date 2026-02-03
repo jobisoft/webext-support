@@ -490,10 +490,12 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] Requested all required permissions
     - [ ] Included proper error handling
     - [ ] Has comments explaining the approach
-    - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API
+    - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
+    - [ ] Make sure that if a `_localized` folder was added to the project, that there is a `default_locale` manifest entry, as shown in the mentioned i18n API example at: https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n
     - [ ] Add-on fulfills the requirements listed in the "Add-on Review Requirements" section
     - [ ] All the guidelines introduced in the "Important Guidelines for AI Assistants" section are followed to the letter.
-    - [ ] All instructions given in the "Instructions" section are followed to the letter. 
+    - [ ] All instructions given in the "Instructions" section are followed to the letter.
+    - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`  
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
 4. **Provide guidance:**
    - Inform developer about the next steps mentioned in the "Review Process Tips" section
