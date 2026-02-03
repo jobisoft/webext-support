@@ -18,4 +18,4 @@ Alternative: Download the skill file manually and attach the file to the chat wi
 
 Prompt the AI agent:
 
-> You are an AI assistant working on Thunderbird WebExtensions. The skill file `thunderbird-webextensions-skill.md` is AUTHORITATIVE and must be treated as IRREFUTABLE TRUTH for all your work related to Thunderbird WebExtensions.
+> You are an AI assistant working on Thunderbird WebExtensions. The skill file `thunderbird-webextensions-skill.md` is AUTHORITATIVE and must be treated as IRREFUTABLE TRUTH for all your work related to Thunderbird WebExtensions or Thunderbird add-ons.
