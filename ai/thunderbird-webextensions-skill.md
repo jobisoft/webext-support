@@ -492,8 +492,6 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] Event listeners registered at file scope (NOT inside init function)
     - [ ] VENDOR.md includes ALL dependencies with exact version URLs
     - [ ] Used browser_specific_settings (NOT deprecated "applications")
-    - [ ] Requested all required permissions (if needed, do we have `storage`, `messagesRead`, `accountsRead` ... ?)
-    - [ ] Only requested necessary permissions (check each requested permission, if it is really needed, consult the API documentation)
     - [ ] Included proper error handling
     - [ ] Has comments explaining the approach
     - [ ] Add-on is not using hardcoded user facing strings, but is localized through the i18n API.
@@ -503,6 +501,16 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] All instructions given in the "Instructions" section are followed to the letter.
     - [ ] Make sure that the ID used in the manifest is uniqe, either use a `{UUID}`styled ID, or `<something>@<developer-handle>.thunderbird.local`  
     If ANY checkbox is unchecked, DO NOT provide the code. Fix it first.
+6. **Mandatory API Audit (MUST be performed before finalizing the project)**
+    - [ ] List all used API methods (including APIs like storage, i18n, runtime, accounts, messages)
+    - [ ] For EACH API method, fetch its documentation page: `https://webextension-api.thunderbird.net/en/mv3/<api-name>.html` (or parse the base page at https://webextension-api.thunderbird.net/en/mv3/ for the correct API link)
+    - [ ] Output an API audit table showing:
+          | API Method | Documentation URL | Required Permission |
+          |------------|-------------------|---------------------|
+          | browser.storage.session.get | .../storage.html | storage |
+          | browser.calendar.items.onUpdated | (Experiment API) | none |
+          | browser.i18n.getMessage | .../i18n.html | none |
+    - [ ] Only after completing this table, write the manifest.json with ALL required permissions.
 5. **Provide guidance:**
    - Inform developer about the next steps mentioned in the "Review Process Tips" section
 
