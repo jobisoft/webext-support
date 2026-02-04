@@ -394,7 +394,7 @@ console.log(data.file.name); // Access file properties
 - Note: The source code submission process is really only for advanced developers. Propose this only if the user insists on using TypeScript or a Node.js driven build process.
 - Follow source code submission guidelines in review policy
 - Developer must upload source code archive during the submission process
-- Developer needs to include build instructions (use a `DEVELOPER.md` file in the root of source archive), that explain how to build the extension (for example: npm ci; npm run build)
+- Developer needs to include build instructions (use a `DEVELOPER.md` file in the root of the source archive), that explain how to build the extension (for example: npm ci; npm run build)
 - Source archive must not include any build artifacts or modules which are downloaded by the build process
 - Keep it as minimal as possible
 - The generated file must exactly match the uploaded XPI
