@@ -388,7 +388,7 @@ console.log(data.file.name); // Access file properties
 
 **1. For Beginners: Avoid Build Tools**
 - Include 3rd party libraries directly (don't use webpack, rollup, etc.)
-- Include a `VENDOR.md` file that documents all 3rd party libraries used, and has links to the exact versions used, and do not link to the "latest" versions. An example for such a vendor file is shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
+- Include a `VENDOR.md` file that documents all 3rd party libraries used, and has links to the exact versions used. Do not use generic links that point to the "latest" versions, which are not stable over time. An example for such a vendor file is shown here: https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html
 
 **2. For Advanced developers: Source Code Submission**
 - Note: The source code submission process is really only for advanced developers. Propose this only if the user insists on using TypeScript or a Node.js driven build process.
