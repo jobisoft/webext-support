@@ -352,9 +352,8 @@ browser.calendar.items.onCreated.addListener(
 ## Native File System Access
 
 ### Current Limitations
-- Raw filesystem access is NOT available
-- Google implemented it, but Mozilla did not follow
-- Thunderbird cannot lift this alone due to resource constraints
+- native filesystem access is NOT available
+- Google implemented native filesystem access for Chrome, but Mozilla decided to not follow their approach for Firefox or Thunderbird
 
 ### Recommended Approach
 
