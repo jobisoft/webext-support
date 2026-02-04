@@ -22,9 +22,9 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Always prefer proper parsing of strings using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
 - When including 3rd party libraries, always use the most recent stable version and include its usage in the VENDOR.md file as shown in this [example](https://webextension-api.thunderbird.net/en/mv3/guides/vcard.html).
 - When downloading files from a repository, use git to clone it, do NOT use WebFetch.
-- Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the import directive.
+- Always prefer ES6 modules over UMD modules, and always use a background of type "module" to be able to use the `import directive.
 - Always analyze ES6 modules, to learn if they need a named import or a default import.
-- Make sure the add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
+- Make sure the created add-on fulfills all requirements listed in the "Add-on Review Requirements" section.
 - Never hardcode user-facing strings, but use the i18n API to localize the add-on as shown in this [i18n API example](https://github.com/thunderbird/webext-examples/tree/master/manifest_v3/i18n), which uses the [i18n.mjs](https://github.com/thunderbird/webext-support/tree/master/modules/i18n) to localize html files.
 - Whenever the developer asks a question or reports something is not working, re-read this skill file to search for solutions presented directly in this file, or in any of its linked resources, before moving on to search the web.
 
