@@ -252,17 +252,17 @@ import { someFunction, someConstant } from "./lib/somemodule.js";
 
 ### Standard Release Channel (Monthly)
 - Update cadence: ~4 weeks
-- A new major version with each release (147.0, 148.0, ...) 
+- A new major version with each release (`147.0`, `148.0`, ...) 
 - Gets new features and APIs (and bug fixes & security fixes)
 
 ### ESR Channel (Extended Support Release)
-- Update cadence: 1 major update per year, with lots of versions "missing" in between (115.*, 128.*, 140.*, 153.*, ...)
-- Receives bug fixes & security fixes on regular basis alongside the major monthly releases, but as minor releases (140.1, 140.2, ...)
+- Update cadence: 1 major update per year, with lots of versions "missing" in between (`115.*`, `128.*`, `140.*`, `153.*`, ...)
+- Receives bug fixes & security fixes on regular basis alongside the major monthly releases, but as minor releases (`140.1`, `140.2`, ...)
 - No new features or APIs
 
 ### For Developers
 - Target the Release channel for most add-ons.
-- Target ESR channel if using custom Experiment APIs. Target the Release channel for add-ons with custom Experiment APIs *only* if the add-on developer can provide the required monthly updates, otherwise the add-on will stop working and cause user frustration.
+- Target the ESR channel for add-ons relying on Experiment APIs. Targeting the Release channel here is acceptable *only* when the developer can guarantee the required monthly updates; otherwise, the add-on will cease functioning and negatively impact users.
 
 ## Official API Documentation
 
