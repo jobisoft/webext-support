@@ -214,7 +214,7 @@ const emails = parsed.map(p => p.email);
 
 ### 9. Set correct strict_min_version entry
 
-Make sure the manifest.json has a strict_min_version entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
+Make sure the `manifest.json` file has a `strict_min_version` entry matching the used functions. If for example a function added in Thunderbird 137 is used, it must be set to 137.0 or higher.
 
 ### 10. Always use background type "module"
 
