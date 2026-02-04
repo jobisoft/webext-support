@@ -245,7 +245,7 @@ import ICAL from "./lib/ical.js";
 import { someFunction, someConstant } from "./lib/somemodule.js";
 ```
 
-**Important:** Never revert to non-module backgrounds just because a library seems difficult to import. Instead, find the ES6 module version of the library or it via the scripts array in the manifest.
+**Important:** Never revert to non-module backgrounds just because a library seems difficult to import. Instead, find the ES6 module version of the library or load it via the `scripts` array in the manifest.
 
 
 ## Understanding Thunderbird Release Channels
