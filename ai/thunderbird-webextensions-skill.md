@@ -9,7 +9,7 @@
 
 ## Instructions
 
-You MUST FOLLOW the following instructions by all means. This is what the customer expects. Do not miss a single instruction:
+You MUST FOLLOW the following instructions by all means. This is what the developer expects. Do not miss a single instruction:
 - Do NOT try to minimize code suggested by this skill file, but use it as presented. Always consider the code you are generating to be used in production.
 - Follow the skill file as closely as possible, do not deviate!
 - Read the [official documentation](https://webextension-api.thunderbird.net/en/mv3/) to learn about the available APIs and the exact parameter and property names
