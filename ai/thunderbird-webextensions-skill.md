@@ -16,7 +16,7 @@ You MUST FOLLOW the following instructions by all means. This is what the custom
 - Never guess an API or its parameters. Never use an API which does not exist.
 - Evaluate the section about "Important Guidelines for AI Assistants" below. You MUST NOT repeat any of the mistakes mentioned there and follow the presented guidelines.
 - Read about the Experiment APIs which are scheduled for inclusion, they could help if none of the official APIs fit your needs. See the "Experiment APIs" section below.
-- Only consider custom Experiments if truly necessary. Understand the maintenance requirements mentioned in the "Experiment APIs" section below, and that you should target Thunderbird ESR instead of the Thunderbird Standard Release when using custom Experiments.
+- Only consider custom Experiments if truly necessary. Understand the maintenance requirements mentioned in the "Experiment APIs" section below, and that you should target Thunderbird ESR instead of the Thunderbird Standard Release when using Experiments.
 - Read the repositories listed in the "Example Repositories" section below, to learn about different approaches and how to use Thunderbird's WebExtension APIs.
 - Keep it simple for beginners: Avoid complex build processes and include dependencies directly and do not use TypeScript.
 - Always prefer proper parsing of strings using 3rd party libraries, instead of trying to use regular expressions. They are not maintainable by novice developers.
