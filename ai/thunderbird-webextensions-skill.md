@@ -439,7 +439,7 @@ console.log(data.file.name); // Access file properties
 }
 ```
 
-**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the tabs permission and the activeTab permission, which are only needed to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is also rarely needed.
+**Important:** Only request permissions you actually need. Unnecessary permissions may cause rejection during ATN review. Examples are the `tabs` permission and the `activeTab` permission, which are only needed to get host permission for the active tab or all tabs, in order to inject content scripts. This is almost never used in Thunderbird (see compose scripts or message display scripts). The two permissions are also needed to read the icon or URL of a tab, which is as well rarely needed.
 
 
 ## Example Repositories
@@ -457,10 +457,9 @@ console.log(data.file.name); // Access file properties
 
 ## Troubleshooting
 
-### "API not working"
-1. Check you're using the correct API namespace (`browser.` or `messenger.`).
-2. Verify permissions in manifest.json
-3. Verify the API, API method and/or API property actually exists in the official API documentation (see section "Official API Documentation")
+### "Not working"
+1. Perform a 3rd party library audit, as exlained in step #4 of the "Workflow: How to Use This Skill" section.
+2. Perform an API audit, as explained in step #5 of the "Workflow: How to Use This Skill" section.
 
 ### "Experiment not loading"
 1. Check manifest.json has correct `experiment_apis` entry
@@ -468,7 +467,7 @@ console.log(data.file.name); // Access file properties
 3. Verify file paths are correct
 
 ### "File access not working"
-1. You cannot use raw filesystem APIs
+1. You cannot use raw or native filesystem APIs
 2. Use storage.local for data persistence
 3. Use File input prompts for user files
 4. Store File objects directly in storage.local
@@ -509,7 +508,7 @@ console.log(data.file.name); // Access file properties
 When a developer asks about Thunderbird WebExtensions:
 
 1. **First:** If creating a new extension, prompt for developer information:
-   - Developer name (for `author` field in the manifest).
+   - Developer name (for the `author` field in the manifest).
    - Developer handle (to be used in the extension ID like `myextension@handle.thunderbird.local`).
 2. **Then:** Determine if this is a standard API or an Experiment add-on:
    - [ ] Fetch and read the [official API documentation](https://webextension-api.thunderbird.net/en/mv3/). List all available API namespaces (e.g., accounts, addressBooks, compose, folders, messages, tabs, windows, etc.) to confirm you have parsed the documentation.
@@ -525,7 +524,7 @@ When a developer asks about Thunderbird WebExtensions:
     - [ ] Used 3rd party libraries are the most recent stable version.
     - [ ] Event listeners registered at file scope (NOT inside init function).
     - [ ] VENDOR.md includes ALL dependencies with exact version (!) URLs (not to "main", "master" or the most recent one).
-    - [ ] Used browser_specific_settings (NOT deprecated "applications").
+    - [ ] Used `browser_specific_settings` (NOT deprecated "applications").
     - [ ] Included proper error handling.
     - [ ] Has comments explaining the approach.
     - [ ] Add-on is not using hardcoded user-facing strings, but is localized through the i18n API.
