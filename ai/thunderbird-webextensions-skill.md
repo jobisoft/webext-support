@@ -299,15 +299,13 @@ Experiment APIs allow add-ons to access Thunderbird's core internals directly, s
 - **Target ESR channel specifically**
 - Reference `esr-mv2` or `esr-mv3` documentation
 
-### Available Experiment APIs
+### Available semi-official Experiment APIs
 
-Only these Experiment APIs are officially maintained and available for use:
+These Experiment APIs are well maintained and are on track to be included in Thunderbird, but they are not yet official APIs:
 
 #### Calendar Experiment API
 
-**Special status:**
-- This Experiment API is managed by the Thunderbird team and is **planned for inclusion as a standard API**
-- To reduce developer burden, always use that API instead of creating a custom Experiment for interacting with the calendar
+To reduce developer burden, always use this Experiment API instead of creating a custom Experiment for interacting with the calendar.
 
 **Use cases:**
 - ✅ Reading existing event/task items from Thunderbird's calendar
@@ -317,8 +315,8 @@ Only these Experiment APIs are officially maintained and available for use:
 
 **Setup requirements:**
 1. Temporarily clone the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository.
-2. Add all experiment_apis entries found in the cloned manifest.json file at `calendar/manifest.json` to the project's `manifest.json`.
-3. Copy the `calendar/experiments/calendar/` directory from the cloned repository into the project as `experiments/calendar/` (this path matches the entries from the cloned manifest.json). Do not modify the files.
+2. Add all `experiment_apis` entries found in the cloned manifest.json file at `calendar/manifest.json` to the project's `manifest.json`.
+3. Copy the `calendar/experiments/calendar/` directory from the cloned repository into the project as `experiments/calendar/` (this path matches the entries from the cloned `manifest.json`). Do not modify these files.
 
 **Note:**
 The calendar API defaults to the jCal format, but tasks are currently only supporting the iCal format. Therefore: Always request iCal format:
@@ -346,8 +344,6 @@ browser.calendar.items.onCreated.addListener(
 **Additional resources (use with caution):**
 - https://github.com/thunderbird/webext-support - Helper APIs and modules (not on track for inclusion)
 - https://github.com/thunderbird/webext-examples - Example extensions (includes some Experiments)
-
-**Remember:** Only Experiments in the [webext-experiments](https://github.com/thunderbird/webext-experiments/) repository are on track for official inclusion.
 
 ## Native File System Access
 
