@@ -226,7 +226,7 @@ Always use `type: "module"` for background scripts. This is actually the simpler
 ```json
 // WRONG - Do not omit type or use non-module backgrounds
 "background": {
-  "scripts": ["lib/somelib.js", "background.js"]
+  "scripts": ["background.js"]
 }
 
 // RIGHT - Always use type: "module"
@@ -408,12 +408,20 @@ console.log(data.file.name); // Access file properties
 - Being phased out
 
 ### Manifest V3 (Current)
-- Newer version, driven by Google
+- Newer version, driven by Google Chrome
 - No persistent background pages
-- **Service Workers** Google's approach
-- **Event pages** additional approach from Mozilla/Thunderbird - Background restarts when registered events fire
+- Goole Chrome uses service workers, but Thunderbird still supports non-persistent background pages (a.k.a event pages)
+- Event pages will be stopped if idle, and will be restarted whenever one of its registered events is triggered
+- Always use event pages in Manifest V3, unless the developer explicitly requests to use service workers. Event pages allow to import non-ES6 javascript files in the `scripts` array of the `background` manifest entry, while also supporting a module background and importing ES6 modules in the background via the `import` directive:
 
-**Default to MV3** for all new extensions.
+```json
+"background": {
+  "scripts": ["lib/some-non-ES6-lib.js", "background.js"]
+  "type": "module"
+}
+```
+
+**Default to Manifest V3** for all new extensions.
 
 
 ## Permission Requirements
